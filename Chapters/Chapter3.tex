@@ -1,0 +1,108 @@
+% Chapter 3
+% polish last name review on voting classifiers kravnik?
+\chapter{Contributions} % Main chapter title
+
+\label{Chapter3} % For referencing the chapter elsewhere, use \ref{Chapter3} 
+
+%----------------------------------------------------------------------------------------
+
+\section{Voting Classifier}
+A voting classifier was extracted from the scikit-learn library and modified to handle classification in a streaming setting. There were two voting schemes previously implemented; the first was a "hard" vote, which uses the predicted class labels for majority voting; and a "soft" vote, which selects the label with the highest probability average. 
+\textit{Big blurb on voting classifiers}
+
+%----------------------------------------------------------------------------------------
+
+\section{FHDDMS}
+
+Additionally, this thesis builds upon my colleague's, Ali Pesaranghader, work \parencite{pesaranghader2016fast} in which he proposes a concept drift detection algorithm that uses a sliding window storing whether or not the classifier predicted the class properly. To detect the drift, the author uses Hoeffding's inequality to detect when a significant change occurs between the maximum probability of correct predictions and the most recent probability of correct predictions. The authors found that FHDDMS was able to detect a drift with a smaller delay and greater accuracy when compared to the state-of-the-art.
+
+\textit{Bigger blurb on how FHDDMS works}
+
+%----------------------------------------------------------------------------------------
+
+\section{Improvements to voting classifier for concept drift}
+
+%The two existing voting schemes in scikit-multiflow are "soft" voting and "hard" voting.  also known as majority voting in the literature. For the 'hard' voting scheme, the ensemble votes for the class label which the majority of classifiers predicted. In the soft voting scheme, the classifiers all need to output a confidence score along with their prediction, and the ensemble votes for the class label with the highest average probability.
+%We implemented one additional voting scheme, which is similar to the soft voting scheme in that it must use the confidence scores again, but does a majority vote on the class label for the highest sum of confidence squared. This method essentially weighs each prediction by the square of its confidence.
+
+As previously stated, the scikit-learn voting classifier implements two voting strategies: the first being "soft" voting and the second being "hard" voting. The former calculates the probability that one or many tuples belong to a given class label. The latter performs a majority voting, meaning that the class label with the highest number of votes will be chosen.
+The "soft" voting strategy also requires that all classifiers in the voting ensemble be capable of outputting a probability associated to its class label prediction.
+
+We implemented one additional voting scheme similar to the "soft" scheme in that it requires its classifiers to output a probability or confidence in the class label prediction. Our method uses a logistic function with a sigmoid curve function to weigh the probability, centered around seventy five percent (75\%) confidence.
+Logistic functions have the following equation
+\begin{equation}
+    f(x)=\frac{L}{1+e^{-k(x-x_0)}}\\ 
+    \label{eq:logistic_function}
+\end{equation}
+where \textit{e} is the natural logarithm base, \textit{$x_0$} is the x-value of the sigmoid's midpoint, \textit{L} is the curve's maximum value, and \textit{k} is the steepness of the curve.
+
+The logistic function that we used, uses the following values for the variables listed above. $x_0=0.75$, $L=1$, and $k=11$. These values were selected based on the resulting graph for values of x between zero and one ([0;1]), which allowed us to assign almost no weight to predictions with a probability of under forty percent (40\%), and give more weight to predictions with a probability of over seventy five percent (75\%).
+
+Our proposed voting strategy therefore computes the sum of this logistic function using the prediction of each classifier for each class label. See the following equation:
+\begin{equation}
+    \sum_{i=0}^{c} \frac{1}{1+e^{-11(p_i(X)-0.75)}}\\ 
+    \label{eq:logistic_sum}
+\end{equation}
+where $c$ is the number of classifiers in the voting ensemble and $p_i(X)$ is the probability of classifier $i$ predicting that the tuple belongs to class X. 
+The sum presented in equation \ref{eq:logistic_sum} is calculated for each class label. The class label with the highest sum is thereafter selected as the winner in the vote, and we hope proves to be more accurate based on the importance of the weight of the predicted class probability.
+
+%----------------------------------------------------------------------------------------
+
+\section{Hybrid sliding-tumbling windows}
+One of many issues in data stream data mining is timing and computing resources. An algorithm needs to balance window sizes 
+Let the number of tuples used in the interleaved test-then-train loop iterations be \textit{number\_of\_tuples}, and let \textit{number\_of\_classifiers} be the number of classifiers in the voting ensemble (VE). The VE will have a window size of \textit{number\_of\_tuples}*\textit{number\_of\_classifiers}. At every iteration of the interleaved test-then-train loop, we will append the new tuples to the VE's window and train a single classifier in the VE. For the next \textit{number\_of\_classifiers - 1} iterations, we will train the remaining \textit{number\_of\_classifiers - 1} classifiers in the ensemble so that from the point of view of the VE, we are training and testing using sliding windows but from the point of each c classifier, we are training them using tumbling windows.
+
+While not used for the same purpose, my colleague Sarah D'Ettore used the same sliding batches to improve CDC-Stream in her thesis \citep{d2016fine}. Figure \ref{fig:sliding_tumbling_windows}, taken from my colleagues' thesis, shows how the algorithm works for three (3) classifiers in the ensemble with a batch size of three (3).
+
+The motivation for this technique is to determine if we can spend less execution time training the classifiers and to investigate how progressively delaying training of some of classifiers in the VE affects concept drift detection.
+
+\begin{algorithm}
+\KwIn{X, y}
+\KwResult{at least one classifier in the VE was trained}
+\eIf {classifiers never been trained yet}{
+    classifierToFit = classifierList[index]\\
+    index = index+1 modulo numberOfClassifiers\\
+    classifierToFit.partialTrain(X, y)
+}{
+    \For{$classifier \in classifierList$}{
+        classifier.partialTrain(X, y)
+    }
+}
+\caption{Training in VE\label{alg:sliding_tumbling_windows}}
+\end{algorithm}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{./Figures/sliding_tumbling_windows.png}
+  \caption{Sliding Tumbling windows.}
+  \label{fig:sliding_tumbling_windows}
+\end{figure}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Improvements to voting classifier to reduce dependency on ground truth}
+
+The interleaved test-then-train methodology in a data streaming setting has a rather large flaw: we are assuming that we obtain the ground truth immediately after testing. This means that we assume that the ground truth is always available milliseconds after testing our models. For the large majority of cases, this approach is not feasible.
+
+Therefore, we wanted to determine if we could re-use the idea behind self-training in an offline setting to reduce our dependency on the ground truth in the online streaming setting for the interleaved test-then-train method. We propose an approach that is, as previously stated, similar to self-training in that we use the classifier's prediction, and not ground truth, when training.
+
+However, using only the predictions to train our model in an online setting is a recipe for disaster. The cons to using self-training in an offline setting is that it can reinforce and classification errors.
+
+Given this restriction, we want to determine at what ratio of predictions to ground truth our voting ensemble's accuracy would decline and by how much.
+
+%----------------------------------------------------------------------------------------
+
+\section{Improvements to FHDDMS to remove dependency on ground truth}
+
+Along the same lines of the previous section, FHDDMS relies on immediate knowledge of the ground truth after testing and after training. The drift detection mechanism in FHDDMS relies on storing, in a sliding window, whether or not the classifier accurately predicted the class. This method only applies to a select few domains where ground truth can be available almost instantly after the tuples are generated.
+
+It is for that reason that we have set out to study how much ground truth can be omitted in the case of FHDDMS to reduce or remove its dependency on immediate knowledge of the ground truth to detect drifts in an online streaming setting.
+
+In order to do so, we have opted to modify FHDDMS to run inside of the voting ensemble, with one sliding window per classifier in the ensemble. In each sliding window, we store not whether the classifier accurately predicted the class label, but rather if that sliding window's classifier voted for the class label that won the ensemble vote.
+
+%----------------------------------------------------------------------------------------
+
+\section{Summary}
+
+%----------------------------------------------------------------------------------------
