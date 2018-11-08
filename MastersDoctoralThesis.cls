@@ -1,25 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Masters/Doctoral Thesis 
-% Class File
-% Version 1.6 (27/8/17)
-%
-% This class was downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% Authors:
-% Vel (vel@latextemplates.com)
-% Johannes Böttcher
-%
-% Notes:
-% 1) This class file defines the structure and layout of the template file (main.tex).
-% 2) It has been written in such a way that under most circumstances you should not need
-% to edit it; updating it to a newer version will be harder. If you do make changes, please change the name of
-% the file and add comments to make your changes more visible.
-%
-% Class license:
-% LPPL v1.3c (http://www.latex-project.org/lppl)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
 %	CLASS DEFINITION AND PARAMETERS
@@ -276,6 +254,7 @@
 %----------------------------------------------------------------------------------------
 
 \RequirePackage[markcase=used]{scrlayer-scrpage}
+\PassOptionsToPackage{draft=false}{scrlayer-scrpage}
 \providepairofpagestyles{thesisSimple}{%
 	\clearpairofpagestyles%
 	\automark[chapter]{chapter}

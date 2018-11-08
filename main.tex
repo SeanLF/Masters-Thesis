@@ -23,18 +23,18 @@
 %----------------------------------------------------------------------------------------
 
 \documentclass[
-14pt, % The default document font size, options: 10pt, 11pt, 12pt
+12pt, % The default document font size, options: 10pt, 11pt, 12pt
 %oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
 english, % ngerman for German
+draft=false,
 doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
-draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
-%liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
+liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
-%parskip, % Uncomment to add space between paragraphs
+parskip, % Uncomment to add space between paragraphs
 %nohyperref, % Uncomment to not load the hyperref package
 headsepline, % Uncomment to get a line under the header
-chapterinoneline, % Uncomment to place the chapter title next to the number on one line
+%chapterinoneline, % Uncomment to place the chapter title next to the number on one line
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
 
@@ -42,8 +42,9 @@ chapterinoneline, % Uncomment to place the chapter title next to the number on o
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
 \usepackage{mathpazo} % Use the Palatino font by default
+\usepackage{graphicx}
 
-\usepackage[backend=bibtex,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+\usepackage[backend=bibtex,natbib=true]{biblatex} % Use the bibtex backend
 
 \addbibresource{bibliography.bib} % The filename of the bibliography
 
@@ -195,38 +196,20 @@ The acknowledgments and the people to thank go here, don't forget to include you
 
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
-\textbf{FHDDMS} & \textbf{F}ast \textbf{H}offding \textbf{D}rift \textbf{D}etection \textbf{M}ethod for evolving data \textbf{S}treams \\
+\textbf{ADWIN} & Adaptive Windowing \\
+\textbf{AI} & Artificial Intelligence \\
+\textbf{Bagging} & Bootstrap Aggregation \\
+\textbf{CPU} & Central Processing Unit \\
+\textbf{FHDDMS} & Fast Hoffding Drift Detection Method for evolving data Streams \\
+\textbf{LED} & Light Emitting Diode \\
+\textbf{RAM} & Random Access Memory \\
+\textbf{TN} & True Negative \\
+\textbf{TP} & True Positive \\
+
+
+
 
 \end{abbreviations}
-
-%----------------------------------------------------------------------------------------
-%	PHYSICAL CONSTANTS/OTHER DEFINITIONS
-%----------------------------------------------------------------------------------------
-
-\begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
-
-% The \SI{}{} command is provided by the siunitx package, see its documentation for instructions on how to use it
-
-Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
-%Constant Name & $Symbol$ & $Constant Value$ with units\\
-
-\end{constants}
-
-%----------------------------------------------------------------------------------------
-%	SYMBOLS
-%----------------------------------------------------------------------------------------
-
-\begin{symbols}{lll} % Include a list of Symbols (a three column table)
-
-$a$ & distance & \si{\meter} \\
-$P$ & power & \si{\watt} (\si{\joule\per\second}) \\
-%Symbol & Name & Unit \\
-
-\addlinespace % Gap to separate the Roman symbols from the Greek
-
-$\omega$ & angular frequency & \si{\radian} \\
-
-\end{symbols}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
