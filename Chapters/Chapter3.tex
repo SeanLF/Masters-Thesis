@@ -40,7 +40,18 @@ Our proposed voting strategy therefore computes the sum of this logistic functio
     \label{eq:logistic_sum}
 \end{equation}
 where $c$ is the number of classifiers in the voting ensemble and $p_i(X)$ is the probability of classifier $i$ predicting that the tuple belongs to class X. We then divide by the maximum value for $p_i(X)$ to ensure that our sum covers all values from 0 to 1.
-The sum presented in equation \ref{eq:logistic_sum} is calculated for each class label. The class label with the highest sum is thereafter selected as the winner in the vote, and we hope proves to be more accurate based on the importance of the weight of the predicted class probability.
+
+Another weighting equation is proposed to determine if it is possible to achieve similar results by using a different function that resembles the logistic sigmoid function presented above while being less computationally intensive.
+The weighting function is seen in equation \ref{eq:sin_weight_fn} and the sum is seen in equation \ref{eq:sin_sum}. The plot of equation \ref{eq:sin_weight_fn} is almost identical to the plot of \ref{eq:logistic_function}, with a maximum difference of approximately 0.0183 over [0, 1].
+\begin{equation}
+    f(x)=sin^8(\frac{x*\pi}{2})
+    \label{eq:sin_weight_fn}
+\end{equation}
+\begin{equation}
+\sum_{i=0}^{c} sin^8(\frac{p_i(X)*\pi}{2})
+    \label{eq:sin_sum}
+\end{equation}
+The sums presented in equations \ref{eq:logistic_sum} and \ref{eq:sin_sum} are calculated for each class label. The class label with the highest sum is thereafter selected as the winner in the vote, and we hope proves to be more accurate based on the importance of the weight of the predicted class probability.
 
 %----------------------------------------------------------------------------------------
 
