@@ -1,9 +1,91 @@
-% Chapter 3
+% Chapter 2
 
 \chapter{Background Work} % Main chapter title
 
-\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter3} 
+\label{chapter:background_work} % For referencing the chapter elsewhere, use \ref{Chapter3} 
+In this chapter, we will briefly cover data mining, then go over published works where it pertains to data stream mining. This will comprise of various algorithms, and the current research problems being addressed.
+
+We expect the audience of this thesis to be comfortable in the field of computer science and to have briefly read about or been introduced to machine learning.
 
 %----------------------------------------------------------------------------------------
 
-% Bartosz Krawczyk 
+\cite{KRAWCZYK2017132} % Bartosz Krawczyk 
+
+\url{https://scikit-multiflow.github.io/scikit-multiflow/skmultiflow.meta.leverage_bagging.html#module-skmultiflow.meta.leverage_bagging}
+
+%----------------------------------------------------------------------------------------
+
+\section{Voting Classifiers / Ensembles\label{section:voting_ensemble}}
+Voting classifiers are a type of ensemble classifiers, meaning that they are an amalgamation of any given number of other classifiers \cite{KRAWCZYK2017132,opitz1999popular,polikar2006ensemble,rokach2010ensemble}. In the case of the voting classifier, a function is applied to the output of these classifiers when it comes to predicting the class label of an instance. In order to train the voting classifier, all of the classifiers comprised within it are, in almost all cases, fed all of the training instances to learn from, that are passed to the ensemble. When predicting a class for an instance, the instance is fed to the ensemble, and then to the classifiers within it for them to output their predictions based on the model of what they learned during their training. The ensemble then needs to map these multiple, potentially different, predictions to a single output prediction. In order to do so, several functions have been proposed that apply weights to any permutation of the classifiers and/or of their predictions, and then apply a combination rule to these un/weighted values to finally vote on the final output of the ensemble.
+
+
+Zhou, explains voting techniques in \citep[72-75]{zhou2012ensemble}.
+\subsection{Majority Voting}
+This voting scheme is reportedly the most popular. The method is almost as simple as it sounds. Each classifier in the ensemble votes for a class label and the winning class label is the one with at least half the votes. If none of the class labels obtain more than half of the votes, a "rejection option" is given and no prediction is made. In the case of binary classification, with \textit{n} classifiers, the winning class must have $\lfloor \frac{n}{2} + 1\rfloor$votes. Equation \ref{eq:majority_voting} shows the formula for majority voting. $h_i^j(x) \in [0,1]$ and takes value $1$ if classifier $h_i$ predicts class label $c_j$. $l$ is the number of class labels.
+
+\begin{equation}
+    H(x) = 
+\begin{cases}
+    c_j,& \text{if } \sum^n_{i=1}h^j_i(x) > \frac{1}{2}\sum_{k=1}^{l}\sum_{i=1}^n h_i^k(x)\\
+    rejection,              & \text{otherwise}
+\end{cases}
+\label{eq:majority_voting}
+\end{equation} 
+\subsection{Plurality voting}
+This technique is almost identical to majority voting, with the slight difference that it does not require the final class label to obtain more than half of the votes. The final class label is simply the one with the largest amount of votes. Ties are broken arbitrarily, and plurality coincides with majority voting in the case of binary classification. Equation \ref{eq:plurality_voting} shows the formula for plurality voting. $h_i^j(x) \in [0,1]$ and takes value $1$ if classifier $h_i$ predicts class label $c_j$.
+
+\begin{equation}
+H(x) = c_{arg_j max\sum^n_{i=1}h^j_i(x)}
+\label{eq:plurality_voting}
+\end{equation}
+\subsection{Soft voting}
+Soft voting differs from plurality voting in that it requires each of the classifiers in the ensemble to output a confidence value (usually in [0, 1]) for their prediction for each class value or output the probabilities that an instance belongs a given class label for all class labels.
+In the case of "simple soft voting", the average probability for each class label is computed over the predictions of all classifiers. The probability of the final class label is given by equation \ref{eq:simple_soft}. Again, $h_i^j(x) \in [0,1]$ and takes value $1$ if classifier $h_i$ predicts class label $c_j$. $L$ is the set of class labels, $l$ here is any label in $L$.
+
+\begin{equation}
+H(x)=max( \frac{1}{n}\sum_{i=1}^nh_i^l(x)\ \forall l \in L)
+\label{eq:simple_soft}
+\end{equation}
+There are variations of soft voting where a weight is applied to either each of the classifiers, or to each class, or to each instance. However, Zhou states that in practice, instance weights are typically not used as it may involve a large number of weight coefficients.
+
+%----------------------------------------------------------------------------------------
+
+\section{FHDDM and FHDDMS\label{section:fhddm/s}}
+
+Ali Pesaranghader, in \parencite{pesaranghader2018reservoirthesis,pesaranghader2018reservoir, pesaranghader2016fast}, proposes two similar concept drift detection algorithms. The first uses a single sliding window, the other using two sliding windows: one short and the other longer. The sliding window stores whether or not the classifier predicted the class properly. His drift detection algorithms keep track of the maximum frequency value seen of correct predictions as well as the current frequency of correct predictions over the sliding window(s), then computes the difference between the maximum and current frequency. Hoeffding's inequality is used to determine the maximum desired difference between an empirical mean and a true mean of \textit{n} random independent variables, without making any assumptions on the distribution of the data. A drift is detected by using Hoeffding's inequality to detect when a significant change occurs between the two frequency measures, meaning that the difference surpasses a given threshold. The authors found that FHDDM and then FHDDMS were able to detect drifts with smaller delays and greater accuracy when compared to the state-of-the-art. Refer to algorithm \ref{alg:fhddm} for the implementation of FHDDM.
+
+\begin{algorithm}
+\caption{Fast Hoeffding Drift Detection Method (FHDDM)\label{alg:fhddm}}
+\Fn{init(window\_size, delta)}{
+    (n, $\delta$) = (window\_size, delta)\;
+    $\epsilon_d = \sqrt{\frac{1}{2n}ln\frac{1}{\delta}}$\;
+    reset()\;
+}
+
+\Fn{reset()}{
+    w=[]\;
+    $\mu^m=0$\;
+}
+
+\Fn{detect(p)}{
+    \If{w.size = n}{
+        w.tail.drop()\;
+    }
+    w.push(p)\;
+    \eIf{$w.size < n$}{
+        return False\;
+    }{
+        $\mu^t=\frac{w.count(1)}{w.size()}$\;
+        \If{$\mu^m < \mu^t$}{
+            $\mu^m =\mu^t$\;
+        }
+        $\Delta\mu = \mu^m - \mu^t$\;
+        \eIf{$\Delta\mu \ge \epsilon_d$}{
+            reset()\;
+            \Return True
+        }{
+            \Return False
+        }
+    }
+}
+\end{algorithm}

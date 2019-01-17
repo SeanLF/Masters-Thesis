@@ -1,8 +1,6 @@
 % Chapter 1
 
-\chapter{Introduction} % Main chapter title
-
-\label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+\chapter{Introduction\label{chapter:introduction}} % Main chapter title
 
 %----------------------------------------------------------------------------------------
 
@@ -20,18 +18,24 @@
 %----------------------------------------------------------------------------------------
 
 \section{Thesis Objective}
-
+further research into 
 
 %----------------------------------------------------------------------------------------
 
 \section{Thesis Organization}
 
-In chapter \ref{Chapter2} we review the background work surrounding data stream mining, ensemble learners, and concept drift detection.
+In chapter \ref{chapter:background_work} we review the background work surrounding data stream mining, ensemble learners, and concept drift detection.
 
-Following the review, we will present the contributions made by this thesis to the literature in chapter \ref{Chapter3}.
+Following the review, we will present the contributions made by this thesis to the literature in chapter \ref{chapter:contributions}.
 
 As stated above, this will cover improvements to an existing concept drift algorithm to reduce its dependency on ground truth, improvements to a simple voting classifier to also further reduce its dependency on ground truth and finally a novel windowing technique that combines sliding and tumbling techniques.
 
-In chapter \ref{Chapter4}, we will present the experimental designs for testing our improvements and present the results and discuss them in chapter \ref{Chapter5}.
+In chapter \ref{chapter:experimental_design}, we will present the experimental designs for testing our improvements and present the results and discuss them in chapter \ref{Chapter5}.
 
 Finally we conclude in chapter \ref{Chapter6}.
+
+%----------------------------------------------------------------------------------------
+
+% The motivation for this technique is to determine if we can spend less execution time training the classifiers and to investigate how progressively delaying training of some of classifiers in the ensemble affects concept drift detection and classification performance while also hopefully reducing execution time.
+
+%The interleaved test-then-train methodology in a data streaming setting has a rather large flaw if we consider a real-life scenario: we are assuming that we obtain the ground truth immediately after testing. This means that we assume that the ground truth is always available in a fraction of a second after testing our models. For the large majority of cases, this approach is not realistic, again, in a real-world setting.
