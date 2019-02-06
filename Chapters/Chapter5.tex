@@ -5,3 +5,18 @@
 \label{Chapter5} % For referencing the chapter elsewhere, use \ref{Chapter3} 
 
 %----------------------------------------------------------------------------------------
+\section{Window size}
+\subsection{Without drift detection}
+This experiment determines whether or not there is a significant statistical difference in the execution time and prediction accuracy of our voting ensemble classifier, when changing only the chunk and therefor the window sizes. In order to do so, we ran multiple simulations of prequential evaluation with varying combinations of parameters, while always making sure that each set only had different values of chunk and window sizes.
+For example, one such set would be $[Hybrid,avg\_w\_probability,100\%gt]$ while another would be $[Sliding,avg\_w\_probability,100\%gt]$, etc.
+
+\subsubsection{$\kappa_t$}
+For this measure, some sets of parameters obtained a p value below the 0.05 threshold for the Friedman test and thus rejected the null hypothesis that all window sizes would perform identically in regard to $\kappa_t$. However, the post-hoc Nemenyi test confirmed the null hypothesis as all pair of window sizes failed to obtain a p value below the 0.05 threshold.
+
+\subsubsection{Execution time}
+For this measure, the Friedman test showed a significant statistical difference with all p values below 0.001, thus rejecting the null hypothesis that, unsurprisingly, all window sizes would result in the same execution time. The post-hoc Nemenyi test showed that there was a significant statistical difference between the execution times for chunk sizes 5 and 100. This was supported by a p value of 0.05.
+
+\subsection{With drift detection}
+
+\section{Voting type}
+\subsection{Without drift detection}

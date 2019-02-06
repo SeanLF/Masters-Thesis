@@ -206,7 +206,6 @@ Stochastic Gradient Descent & \begin{tabular}[c]{@{}l@{}}loss=log\\ penalty=l2\\
 
 \subsection{Voting ensemble window types}
 For this experiment, we wanted to determine how our proposed sliding tumbling windows perform against regular sliding and regular tumbling windows (with a $window\ size=33$, and not $99$).
-We will, of course,  compare these results with those of the leverage bagging, no-change, and majority-class classifiers.
 
 In our experimentation, we are comparing the same classifier each time with a different window type ($k=3$), on twenty-three different data sets ($n=23$). Therefore the Friedman will test for the following hypothesis:
 \begin{itemize}
@@ -215,13 +214,13 @@ In our experimentation, we are comparing the same classifier each time with a di
 \end{itemize}
 
 \subsection{Voting ensembles window and chunk sizes}
-For this experiment, we wanted to determine how window and chunk sizes affected the performance of our voting ensemble while using the sliding tumbling windows. We, therefore, ran the experiments for the voting ensemble classifier with varying window and chunk sizes. $Batch\ size \in [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]$ and $window\ size = 3\times batch\ size$ (because our ensemble comprises of 3 classifiers).
-We will, of course, compare these results with those of the leverage bagging, no-change, and majority-class classifiers.
+For this experiment, we wanted to determine how window and chunk sizes affected the performance of our voting ensemble over various voting types, window types and ground truth percentages. We, therefore, ran the experiments for the voting ensemble classifier with varying window and chunk sizes. $Batch\ size \in [5, 10, 25, 50, 75, 100]$ and $window\ size = 3\times batch\ size$ (because our ensemble comprises of 3 classifiers).
+The purpose of this experiment is to determine if there are statistically significant differences in the prediction accuracy and/or execution time depending on the chunk size used for training the ensemble.
 
-In our experimentation, we are comparing 4 classifiers ($k=4$), on twenty-three different data sets ($n=23$). Therefore the Friedman will test for the following hypothesis:
+In our experimentation, we are comparing 6 chunk/window sizes ($k=6$), on eighteen different data sets ($n=18$). Therefore the Friedman will test for the following null hypothesis. NB: performance measures are $\kappa_t$ and execution time.
 \begin{itemize}
-\item $H_0$: The six classifiers will perform identically;
-\item $H_1$: At least one pair of classifiers perform differently.
+\item $H_0$: The six chunk/window sizes will perform identically;
+\item $H_1$: At least one pair of chunk/window sizes perform differently.
 \end{itemize}
 
 \subsection{Voting ensemble voting strategies}
