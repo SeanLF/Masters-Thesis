@@ -1,0 +1,47 @@
+
+\subsection{$LED$}
+The LED data set is a well-known synthetic data set originating from \cite{breiman1984classification}, which can be found at the UCI repository \cite{blake1999uci}. The data set simulates a seven-segment LED screen, on which a single digit is displayed and which we must predict. There are twenty-four binary attributes of which seventeen are irrelevant, and one numerical class attribute distributed in [0, 9]. In other words, there are ten concepts and seven relevant attributes that encode them. As the UCI repository states, without the introduction of noise, this problem would be trivial, and therefore each attribute value has a 10\% probability of having its value inverted. It is also noted that the optimal Bayes rate for this data set has a misclassification rate of 26\%, or a 74\% classification accuracy. The LED dataset contains gradual concept drifts occurring at every twenty-five thousand (25 000) instances.
+
+
+
+\subsection{Voting ensemble window types}
+For this experiment, we wanted to determine how our proposed sliding tumbling windows perform against regular sliding and regular tumbling windows (with a $window\ size=33$, and not $99$).
+
+In our experimentation, we are comparing the same classifier each time with a different window type ($k=3$), on twenty-three different data sets ($n=23$). Therefore the Friedman will test for the following hypothesis:
+\begin{itemize}
+\item $H_0$: The three window types will perform identically;
+\item $H_1$: At least one pair of window types perform differently.
+\end{itemize}
+
+\subsection{Voting ensembles window and chunk sizes}
+For this experiment, we wanted to determine how window and chunk sizes affected the performance of our voting ensemble over various voting types, window types and ground truth percentages. We, therefore, ran the experiments for the voting ensemble classifier with varying window and chunk sizes. $Batch\ size \in [5, 10, 25, 50, 75, 100]$ and $window\ size = 3\times batch\ size$ (because our ensemble comprises of 3 classifiers).
+The purpose of this experiment is to determine if there are statistically significant differences in the prediction accuracy and/or execution time depending on the chunk size used for training the ensemble.
+
+In our experimentation, we are comparing 6 chunk/window sizes ($k=6$), on eighteen different data sets ($n=18$). Therefore the Friedman will test for the following null hypothesis. NB: performance measures are $\kappa_t$ and execution time.
+\begin{itemize}
+\item $H_0$: The six chunk/window sizes will perform identically;
+\item $H_1$: At least one pair of chunk/window sizes perform differently.
+\end{itemize}
+
+\subsection{Voting ensemble voting strategies}
+For this experiment, we wanted to determine how the voting strategy affected the performance of our voting ensemble while using sliding tumbling windows. We, therefore, ran the experiments using both of the provided voting strategies, being the majority voting ("hard") and the highest mean probability ("soft"), as well as our new strategy proposed in section \ref{section:new_voting_strategy}.
+We will, of course, compare these results with those of the leverage bagging, no-change, and majority-class classifiers.
+
+\subsection{Relationship between drift reset strategies \& ground truth}
+For this experiment, we wanted to determine how the drift reset strategy and the percentage of ground truth used for training affected the performance of our voting ensemble while using sliding tumbling windows. We therefore ran experiments for the classifier with five different drift reset strategies (complete reset, no reset, partial reset where each classifier in the ensemble has a 70\% chance of being reset, blind reset at random regular intervals:  $r\times batchSize, r\in[1,7]$), each while using varying amounts of ground truth for the training: $ground\ truth \in \{100, 90, 80, 70, 60, 50\}\%$.
+We will, of course,  compare these results with those of the leverage bagging, no-change, and majority-class classifiers.
+
+\subsection{Evaluating drift detection over various window types}
+For this experiment, we wanted to determine how the drift detection performed depending on the window type. Recall that these are the hybrid sliding tumbling, sliding, or tumbling windows (tumbling windows require a window size of 33), while using the partial drift reset strategy and 75\% of ground truth for the training of our voting ensemble.
+
+
+\subsection{Comparing all classifiers}
+For this experiment, we wanted to examine how our Voting Ensemble performed against all of the other classifiers listed above while using our Sliding Tumbling windows.
+In order to do so, we set up each classifier to run with the default parameters listed in tables \ref{table:default_exp_parameters} and \ref{table:default_clf_parameters}.
+
+In our experimentation, we are comparing seven classifiers ($k=7$), on twenty-five different data sets ($n=25$). Therefore the Friedman will test for the following hypothesis:
+\begin{itemize}
+\item $H_0$: The six classifiers will perform identically;
+\item $H_1$: At least one pair of classifiers perform differently.
+\end{itemize}
+

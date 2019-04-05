@@ -59,6 +59,20 @@ headsepline, % Uncomment to get a line under the header
 \usetikzlibrary{datavisualization.formats.functions}
 
 \usepackage{hhline}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{lscape}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{booktabs}
+
+\newcolumntype{R}[2]{%
+    >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+    l%
+    <{\egroup}%
+}
+\newcommand*\rot{\multicolumn{1}{R{90}{1em}}}
 
 \usepackage{dingbat}
 
@@ -89,7 +103,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Reduced Ground Truth Data Stream Mining Framework} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Semi-Supervised Hybrid Windowing Ensembles for Learning from Evolving Streams} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Dr. Herna \textsc{Viktor}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Master of Science in Computer Science} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -131,7 +145,7 @@ headsepline, % Uncomment to get a line under the header
  
 \vfill
 
-Thesis submitted in partial fulfillment of the requirements for the \\
+Thesis submitted in partial fulfilment of the requirements for the \\
 \textbf{\degreename}\\[0.3cm] % University requirement text
 \deptname\\\univname{}\\[2cm] % Research group name and department name
  
@@ -150,7 +164,12 @@ Thesis submitted in partial fulfillment of the requirements for the \\
 
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
+A major issue with supervised and semi-supervised learning of data streams is late-arriving or missing class labels. Assuming that properly labelled data will always be available and timely is unreasonable, and, as such, supervised methods are not usually applicable in the real world. Therefore, real-world problems usually require the use of semi-supervised or unsupervised learning techniques. In an intrusion detection problem, it is unreasonable to assume that we will know with utmost certainty whether a network packet is malicious or not before any subsequent packet is processed. Additionally, in semi-supervised learning, "the instances having the highest [predictive] confidence are not necessarily the most useful ones" \cite{homayoun2016review}. We want to determine if self-training can perform well without being selective in an online setting.
+
+This leads us to our contributions. We extend an existing concept drift detector to operate without any labelled data, by using a sliding window of our ensemble's prediction confidence, instead of a boolean indicating whether the ensemble predicted correctly. We also extend selective self-training by using all predictions, and not only those with high predictive confidence. Finally, we developed a novel windowing type for ensembles, as sliding windows are very time consuming and regular tumbling windows are not a suitable replacement. Our windowing technique can be considered a hybrid of the two: we train each sub-classifier in the ensemble with tumbling windows, but delay training in such a way that only one sub-classifier can update its model per iteration.
+
+We found, through statistical significance tests, that our framework is (roughly 160 times) faster than current state of the art techniques, and achieves comparable predictive accuracy.
+That being said, more research is needed to further reduce the quantity of labelled data used for training, while also increasing its predictive accuracy.
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -159,7 +178,13 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
+The research conducted for this thesis was financed by the Province of Ontario and the University of Ottawa.
+
+I would like to thank my supervisor, Dr. Herna Viktor, for her guidance, incredible patience, and, her support.
+
+Finally, I could not have completed this thesis without the support, and encouragement of my friends and family.
+
+Many thanks to each and every one of you.\ldots
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
@@ -190,7 +215,9 @@ The acknowledgments and the people to thank go here, don't forget to include you
 \textbf{DDM} & Drift Detection Method \\
 \textbf{FHDDMS} & Fast Hoffding Drift Detection Method for evolving data Streams \\
 \textbf{GB} & Gigabyte \\
+\textbf{IoT} & Internet of Things \\
 \textbf{LED} & Light Emitting Diode \\
+\textbf{ML} & Machine Learning \\
 \textbf{MFHDDMS} & Modified Fast Hoffding Drift Detection Method for evolving data Streams \\
 \textbf{MOA} & Massive Online Analysis \\
 \textbf{NB} & Naive Bayes \\
@@ -198,9 +225,11 @@ The acknowledgments and the people to thank go here, don't forget to include you
 \textbf{RGTDSMF} & Reduced Ground Truth Data Stream Mining Framework \\
 \textbf{SGD} & Stochastic Gradient Descent \\
 \textbf{SSD} & Solid State Drive \\
+\textbf{SSL} & Semi-Supervised Learning \\
 \textbf{TN} & True Negative \\
 \textbf{TP} & True Positive \\
 \textbf{UCI} & University of California, Irvine \\
+\textbf{VFDT} & Very Fast Decision Tree \\
 \textbf{WEKA} & Waikato Environment for Knowledge Analysis \\
 
 
@@ -238,6 +267,7 @@ The acknowledgments and the people to thank go here, don't forget to include you
 % \include{Appendices/AppendixA}
 %\include{Appendices/AppendixB}
 %\include{Appendices/AppendixC}
+\include{Appendices/Chapter7Appendix}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
