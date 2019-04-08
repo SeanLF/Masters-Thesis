@@ -13,7 +13,7 @@ A voting classifier was extracted from the mlxtend library\footnote{\url{http://
 
 The mlxtend voting classifier implements two voting strategies: the first being "soft" voting and the second being "hard" (majority) voting; again, refer to section \ref{section:new_voting_strategy} for their definitions.
 
-We implemented two additional voting schemes similar to the "soft" scheme in that they require its classifiers to output a probability or confidence in the class label prediction. The first method makes use of a logistic function with a sigmoid curve to weigh the probability, centered around a  confidence level. Let $\alpha$ be the parameter that defines the confidence level, set to \textbf{\textit{$\alpha=50\%$}}. And the second method, explained soon thereafter is equivalent to the function of the first method while being less computationally intensive.
+We implemented two additional voting schemes similar to the "soft" scheme in that they require its classifiers to output a probability or confidence in the class label prediction. The first method makes use of a logistic function with a sigmoid curve to weigh the probability, centred around a  confidence level. Let $\alpha$ be the parameter that defines the confidence level, set to \textbf{\textit{$\alpha=50\%$}}. The second method, explained soon thereafter is equivalent to the function of the first method while being less computationally intensive.
 
 
 Logistic functions are defined by the function in equation \ref{eq:logistic_function}
@@ -23,17 +23,17 @@ Logistic functions are defined by the function in equation \ref{eq:logistic_func
 \end{equation}
 where \textit{e} is the natural logarithm base, \textit{$x_0$} is the x-value of the sigmoid's midpoint, \textit{L} is the curve's maximum value, and \textit{k} is the steepness of the curve.
 
-The logistic function that we initially selected had the following values for the variables listed above. $x_0=0.65$, $L=1$, and $k=14$. These values were selected based on the resulting graph for values of $x \in [0, 1]$ and $f(x) \in [0, 1]$. As you can see from figure \ref{graph:weights}, predictions with less than approximately forty percent probability are essentially treated as predictions with zero probability; predictions with under a seventy percent probability are diminished in importance, and those over seventy percent are boosted. Refer to table \ref{table:weight_probabilities} to see how the values change by five and ten percent increments. The reasoning motivating this choice is our intuition that we should put more trust in predictions with over seventy percent (70\%) probability, put less trust in predictions with a probability of under seventy percent  (70\%), and virtually none in predictions with a probability under forty percent (40\%).
+The logistic function that we initially selected had the following values for the variables listed above. $x_0=0.65$, $L=1$, and $k=14$. These values were selected based on the resulting graph for values of $x \in [0, 1]$ and $f(x) \in [0, 1]$. As figure \ref{graph:weights} illustrates, predictions with less than approximately forty percent probability are essentially treated as predictions with zero probability; predictions with under a seventy percent probability are diminished in importance, and those over seventy percent are boosted. Refer to table \ref{table:weight_probabilities} to see how the values change by five and ten percent increments. The reasoning motivating this choice is our intuition that we should put more trust in predictions with over seventy percent (70\%) probability, put less trust in predictions with a probability of under seventy percent  (70\%), and virtually none in predictions with a probability under forty percent (40\%).
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/weight_graph}
+  \includegraphics[width=\linewidth]{./images/chapter3/weight_graph}
 \caption{\label{graph:weights}Voting classifier weighting functions\\\protect\blueline$x$\\
 \protect\redline $\frac{1-tanh(3.5-7x)}{2}$}
 \end{figure}
 
 However, after extensive experimentation, of which the results are found in tables \ref{table:weighting_experimental_test} and \ref{table:weighting_experimental_test_all_datasets}, we found that setting \textbf{$x_0=0.50$} and \textbf{$k=14$} was more optimal than the values we initially selected through intuition for the $x_0$ and $k$ parameters.
 
-The same test as above was repeated, but, over four separate data sets for the two best combination of parameters and the one from our intuition ($k=14$, and $x_0 \in [0.5, 0.55, 0.65]$), and ran only once. Table \ref{table:weighting_experimental_test_all_datasets} shows, again, that $k=14, x_0=0.50$ seems to be the optimal set of parameters as it obtains the best results for three out of four data sets.
+The same test as above was repeated, but, over four separate data sets for the two best combinations of parameters and the one from our intuition ($k=14$, and $x_0 \in [0.5, 0.55, 0.65]$), and ran only once. Table \ref{table:weighting_experimental_test_all_datasets} shows, again, that $k=14, x_0=0.50$ seems to be the optimal set of parameters as it obtains the best results for three out of four data sets.
 
 \begin{table}[]
 \caption{\label{table:weighting_experimental_test}Experimental test of weighting function parameters}
@@ -61,18 +61,18 @@ The same test as above was repeated, but, over four separate data sets for the t
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 \textbf{Dataset} & \textbf{Parameters} ($k=14$) & \textbf{Accuracy} & \textbf{$\kappa$} & \textbf{$\kappa_t$} & \textbf{$\kappa_m$} \\ \hhline{======}
-& $x_0=0.5$	&	84.30	&	68.60	&	68.69	&	68.73\\ \cline{2-6}
-sine1 & $x_0=0.55$	&	84.15	&	68.30	&	68.39	&	68.44\\ \cline{2-6}
- & $x_0=0.65$	&	83.79	&	67.59	&	67.67	&	67.72\\ \hhline{======}
- & $x_0=0.5$	&	79.95	&	59.90	&	60.07	&	60.12\\ \cline{2-6}
-mixed & $x_0=0.55$	&	79.89	&	59.78	&	59.96	&	60.01\\ \cline{2-6}
- & $x_0=0.65$	&	79.60	&	59.20	&	59.38	&	59.43\\ \hhline{======}
- & $x_0=0.55$	&	79.72	&	59.45	&	59.44	&	59.15\\ \cline{2-6}
-circles & $x_0=0.65$	&	79.43	&	58.87	&	58.87	&	58.57\\ \cline{2-6}
- & $x_0=0.5$	&	77.72	&	55.45	&	55.45	&	55.13\\ \hhline{======}
- & $x_0=0.5$	&	85.20	&	68.27	&	68.10	&	61.28\\ \cline{2-6}
-SEA & $x_0=0.55$	&	84.25	&	66.25	&	66.05	&	58.80\\ \cline{2-6}
- & $x_0=0.65$	&	83.41	&	64.38	&	64.25	&	56.60\\ \hline
+& $x_0=0.5$    &    84.30    &    68.60    &    68.69    &    68.73\\ \cline{2-6}
+sine1 & $x_0=0.55$    &    84.15    &    68.30    &    68.39    &    68.44\\ \cline{2-6}
+ & $x_0=0.65$    &    83.79    &    67.59    &    67.67    &    67.72\\ \hhline{======}
+ & $x_0=0.5$    &    79.95    &    59.90    &    60.07    &    60.12\\ \cline{2-6}
+mixed & $x_0=0.55$    &    79.89    &    59.78    &    59.96    &    60.01\\ \cline{2-6}
+ & $x_0=0.65$    &    79.60    &    59.20    &    59.38    &    59.43\\ \hhline{======}
+ & $x_0=0.55$    &    79.72    &    59.45    &    59.44    &    59.15\\ \cline{2-6}
+circles & $x_0=0.65$    &    79.43    &    58.87    &    58.87    &    58.57\\ \cline{2-6}
+ & $x_0=0.5$    &    77.72    &    55.45    &    55.45    &    55.13\\ \hhline{======}
+ & $x_0=0.5$    &    85.20    &    68.27    &    68.10    &    61.28\\ \cline{2-6}
+SEA & $x_0=0.55$    &    84.25    &    66.25    &    66.05    &    58.80\\ \cline{2-6}
+ & $x_0=0.65$    &    83.41    &    64.38    &    64.25    &    56.60\\ \hline
 \end{tabular}
 \end{table}
 
@@ -126,10 +126,10 @@ In order to confirm that the new weighting function was more computationally eff
 
 Algorithm \ref{alg:new_voting_scheme} shows the implementation of this new voting scheme using the hyperbolic tangent function. Figure \ref{graph:weights} shows a plot with the two new proposed weighting functions and compare them to the value of an unweighted prediction represented by $f(x) =x$, for  $x \in [0,1]$. This figure shows how much a value is boosted or reduced compared to its original value
 
-Given that the hyperbolic tangent function selected is equivalent to the logistic sigmoid function, it is not necessary to test its parameters experimentally as they give the exact same output. Figure \ref{fig:boxplots_params} shows the boxplots of table \ref{table:weighting_experimental_test}. The whiskers correspond to the minimum and maximum values over 10 runs with each parameter. The dotted diamond corresponds to the standard deviation, the dotted line in the box corresponds to the mean, while the solid line corresponds to the median.
+Given that the hyperbolic tangent function selected is equivalent to the logistic sigmoid function, it is not necessary to test its parameters experimentally as they give the same output. Figure \ref{fig:boxplots_params} shows the boxplots of table \ref{table:weighting_experimental_test}. The whiskers correspond to the minimum and maximum values over 10 runs with each parameter. The dotted diamond corresponds to the standard deviation, the dotted line in the box corresponds to the mean, while the solid line corresponds to the median.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/boxplots_params}
+  \includegraphics[width=\linewidth]{./images/chapter3/boxplots_params}
 \caption{\label{fig:boxplots_params}Boxplots of experimental test for logistic function parameters}
 \end{figure}
 
@@ -162,13 +162,13 @@ Given that the hyperbolic tangent function selected is equivalent to the logisti
 In \cite{KRAWCZYK2017132}, B. Krawczyk mentions that one of the many issues in data stream mining is execution time, in the sense that our algorithm must learn faster than tuples can arrive. In our case, we aim to determine if we can delay training of some classifiers in our ensemble, and see how it affects execution time and classifying performance, as well as drift detection performance.
 
 We propose the following algorithm, implemented in algorithm \ref{alg:sliding_tumbling_windows}, titled \textit{Sliding-Tumbling windows for training the ensemble}.
-Let the number of tuples (single tuple or chunk) used in the interleaved test-then-train loop iterations be \textit{number\_of\_tuples}, and let \textit{number\_of\_classifiers} be the number of classifiers in the ensemble. The ensemble will have a window size of \textit{number\_of\_tuples}*\textit{number\_of\_classifiers}. At every iteration of the interleaved test-then-train loop, we will append the new tuples to the ensemble's window and train a single classifier in the ensemble on that window. For the next \textit{number\_of\_classifiers - 1} iterations, we will train the remaining \textit{number\_of\_classifiers - 1} classifiers in the ensemble. We do this so that from the point of view of the ensemble, we are training using sliding windows. But from the point of each classifier in the ensemble, we are training them using tumbling windows.
+Let the number of tuples (single tuple or chunk) used in the interleaved test-then-train loop iterations be \textit{number\_of\_tuples}, and let \textit{number\_of\_classifiers} be the number of classifiers in the ensemble. The ensemble will have a window size of \textit{number\_of\_tuples}*\textit{number\_of\_classifiers}. At every iteration of the interleaved test-then-train loop, we will append the new tuples to the ensemble's window and train a single classifier in the ensemble on that window. For the next \textit{number\_of\_classifiers - 1} iterations, we will train the remaining \textit{number\_of\_classifiers - 1} classifiers in the ensemble. We do this so that from the point of view of the ensemble, we are training using sliding windows. However, from the point of each classifier in the ensemble, we are training them using tumbling windows.
 
-While not used for the same purpose, my colleague Sarah D'Ettore used the same sliding batches to improve CDC-Stream in her thesis \citep{d2016fine}. Figure \ref{fig:sliding_tumbling_windows}, taken from my colleagues' thesis, shows how the algorithm works for three (3) classifiers in the ensemble with a batch size of one (1) and a window size of three (3). Each classifier will only learn from the same coloured batch; meaning that at time \textit{t}, only a single classifier has enough tuples to learn from, but the others will learn at time \textit{t+1} and finally at time \textit{t+2}. Each classifier will be learning from what essentially is a tumbling window, from their point of view, just not all from the same one, or at the same time. 
+While not used for the same purpose, the same sliding batches were used to improve CDC-Stream in \citep{d2016fine}. Figure \ref{fig:sliding_tumbling_windows}, taken from our colleague's thesis, shows how the algorithm works for three (3) classifiers in the ensemble with a batch size of one (1) and a window size of three (3). Each classifier will only learn from the same coloured batch; meaning that at time \textit{t}, only a single classifier has enough tuples to learn from, but the others will learn at time \textit{t+1} and finally at time \textit{t+2}. Each classifier will be learning from what essentially is a tumbling window, from their point of view, just not all from the same one, or at the same time. 
 
 To clarify the example, at time $t_1$, our ensemble will receive only one instance, add it to the sliding window and train classifier $c_1$ on the window. At time $t_2$, another instance will be added to the window and the ensemble will train classifier $c_2$ on the new window containing two tuples. At time $t_3$, the ensemble will train classifier $c_3$ on the first purple chunk (the window now has its maximum of 3 instances). At time $t_4$, $c_2$ will learn from the first blue chunk. And at time $t_5$, $c_3$ will learn from the first green chunk. This process loops indefinitely. 
 
-The motivation for this technique is to determine if we can spend less execution time training the classifiers and to investigate how progressively delaying training of some of the classifiers in the ensemble effects concept drift detection and classification performance while also hopefully reducing execution time.
+The motivation for this technique is to determine if we can spend less execution time training the classifiers. We also want to investigate how progressively delaying training of some of the classifiers in the ensemble affects concept drift detection and classification performance while also hopefully reducing execution time.
 
 \begin{algorithm}
 \KwResult{at least one classifier in the ensemble was trained}
@@ -182,7 +182,7 @@ The motivation for this technique is to determine if we can spend less execution
 \end{algorithm}
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/sliding_tumbling_windows}
+  \includegraphics[width=\linewidth]{./images/chapter3/sliding_tumbling_windows}
   \caption{Sliding Tumbling windows \citep{d2016fine}.}
   \label{fig:sliding_tumbling_windows}
 \end{figure}
@@ -193,11 +193,11 @@ The motivation for this technique is to determine if we can spend less execution
 
 \section{Improvements to voting classifier to reduce dependency on ground truth\label{section:vc_reduce_gt}}
 
-The interleaved test-then-train methodology in a data streaming setting has a rather large flaw if we consider a real-life scenario: we are assuming that we obtain the ground truth immediately after testing. This means that we assume that the ground truth is always available in a fraction of a second after testing our models. For the large majority of cases, this approach is not realistic, again, in a real-world setting.
+The interleaved test-then-train methodology in a data streaming setting has a rather significant flaw if we consider a real-life scenario: we are assuming that we obtain the ground truth immediately after testing. This means that we assume that the ground truth is always available in a fraction of a second after testing our models. For the vast majority of cases, this approach is not realistic, again, in a real-world setting.
 
-Therefore, we wanted to determine if we could re-use the idea behind self-training in an offline setting to reduce our dependency on the ground truth in the online streaming setting for the interleaved test-then-train method. We propose an approach that is, as previously stated, similar to self-training in that we use the classifier's prediction, and not ground truth, when training.
+Therefore, we wanted to determine if we could re-use the idea behind self-training in an offline setting to reduce our dependency on the ground truth in the online streaming setting for the interleaved test-then-train method. We propose an approach that is, as previously stated, similar to self-training in that we use the classifier's prediction, as opposed to correctly labelled instances, when training.
 
-However, using only the predictions to train our model in an online setting is a recipe for disaster. The known cons to using self-training in an offline setting are that it can reinforce classification errors; it is, therefore, logical for us to come to the conclusion that we will encounter the same risks in porting this idea to a streaming setting.
+However, using only the predictions to train our model in an online setting is a recipe for disaster. The known cons to using self-training in an offline setting are that it can reinforce classification errors; it is, therefore, logical for us to conclude that we will encounter the same risks in porting this idea to a streaming setting.
 
 Given the restriction of limiting reinforcing misclassification errors, we want to determine at what ratio of predictions to ground-truth our voting ensemble's accuracy would decline and by how much.
 
@@ -228,11 +228,11 @@ The algorithm behind this idea is very straightforward: it consists in duplicati
 
 %----------------------------------------------------------------------------------------
 
-\section{Improvements to FHDDM/S to remove dependency on ground truth: MFHDDM/S}
+\section{Extending FHDDM/S to function without labelled data}
 
-Additionally, this thesis builds upon my colleague's, Dr. Ali Pesaranghader, work described in section \ref{section:fhddm/s}
+Additionally, this thesis builds upon our colleague's, Dr. Pesaranghader, work described in section \ref{section:fhddm/s}
 
-Along the same lines of section \ref{section:vc_reduce_gt}, the drift detection algorithm proposed by my colleague Dr. Pesaranghader in \cite{pesaranghader2016fast}, \textit{FHDDMS}, relies on the immediate knowledge of ground truth. The drift detection mechanism in FHDDMS relies on storing, in a sliding window, whether or not the classifier accurately predicted the class. This method only applies to a select few domains where ground truth can be available almost instantly after the tuples are generated, and in all synthetic data streams of course. For the large majority of domains, this method simply isn't applicable.
+Along the same lines of section \ref{section:vc_reduce_gt}, the drift detection algorithm proposed by my colleague Dr. Pesaranghader in \cite{pesaranghader2016fast}, \textit{FHDDMS}, relies on the immediate knowledge of ground truth. The drift detection mechanism in FHDDMS relies on storing, in a sliding window, whether or not the classifier accurately predicted the class. This method only applies to a select few domains where correctly labelled data become available almost instantly after the tuples arrive, and in all synthetic data streams of course. For the vast majority of domains, this method is not applicable.
 
 It is for that reason that we have set out to study if FHDDM/S is still able to detect drifts when completely removing its dependency on any knowledge of the ground truth in an online streaming setting by replacing the booleans, indicating that the classifier in/correctly predicted a class instance, stored in the sliding window by another variable.
 
@@ -246,7 +246,7 @@ We implemented several approaches:
 \end{itemize}
 
 
-After extensive experimentation, we were able to determine that when it comes to detecting drifts, the unweighted probabilities were no more useful than the weighted values as the difference in performance between the two is negligible. A SEA dataset was generated with 10\% noise with one-hundred thousand instances, with 4 concepts and 3 abrupt concept drifts at every twenty-five thousand instances. And the $CIRCLES$, $MIXED$ and $SINE1$ datasets were used (refer to section \ref{section:performance_measures}). When drifts were detected, all of the classifiers in the ensemble were completely reset, and one drift detector for the entire ensemble was used. In order to determine whether to use unweighted or weighted probabilities for the drift detector, we looked at the accuracy and kappa statistics of the entire stream (covered in section \ref{eq:kappa}). Table \ref{table:drift_use_weighting_experimental_test} shows these results. The values in the table are averages over 10 runs.
+After extensive experimentation, we were able to determine that when it comes to detecting drifts, the unweighted probabilities were no more useful than the weighted values as the difference in performance between the two is negligible. A SEA dataset was generated with 10\% noise with one-hundred thousand instances, with four concepts and three abrupt concept drifts at every twenty-five thousand instances. And the $CIRCLES$, $MIXED$ and $SINE1$ datasets were used (refer to section \ref{section:performance_measures}). When drifts were detected, all of the classifiers in the ensemble were completely reset, and one drift detector for the entire ensemble was used. In order to determine whether to use unweighted or weighted probabilities for the drift detector, we looked at the accuracy and kappa statistics of the entire stream (covered in section \ref{eq:kappa}). Table \ref{table:drift_use_weighting_experimental_test} shows these results. The values in the table are averages over ten runs.
 
 \begin{table}[]
 \caption{\label{table:drift_use_weighting_experimental_test}Testing whether to use weighted probabilities for detecting drifts}
@@ -268,12 +268,12 @@ sine1&\checkmark&84.35&68.71&68.79&68.84\\ \cline{2-6}
 Figure \ref{fig:boxplot_params_use_w} shows the results of the experimental test from table \ref{table:drift_use_weighting_experimental_test} using boxplots. As in the table, we can see that the weighted predictions cause performance to increase ever so slightly. In the case of the $CIRCLES$ dataset, the unweighted probabilities seem to perform better than the weighted ones.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/boxplot_params_use_w}
+  \includegraphics[width=\linewidth]{./images/chapter3/boxplot_params_use_w}
 \caption{\label{fig:boxplot_params_use_w}Boxplots showing performance over 4 datasets (using un/weighted probabilities for drift detection)}
 \end{figure}
 
 Our modified drift detectors using the probabilities will be called MFHDDM/S (M for modified).
-Algorithm \ref{alg:pfhddm} shows the implementation for MFHDDM. MFHDDMS is different from MFHDDM only in that it keeps track of an additional shorter sliding window. No changes were necessary to implement FHDDM/S with the different boolean, as Dr. Pesaranghader's currently works with boolean values.
+Algorithm \ref{alg:pfhddm} shows the implementation of MFHDDM. MFHDDMS is different from MFHDDM only in that it keeps track of an additional shorter sliding window. No changes were necessary to implement FHDDM/S with the different boolean, as Dr. Pesaranghader's currently works with boolean values.
 
 \begin{algorithm}
 \caption{Modified Fast Hoeffding Drift Detection Method (MFHDDM)\label{alg:pfhddm}}
@@ -338,7 +338,7 @@ The final step in the interleaved test-then-train loop is to train the ensemble 
 Only one classifier in the ensemble is trained on the hybrid window's tuples. In order to do so, an index is kept inside the ensemble. This index points to the classifier to train and is incremented at each $ensemble.train()$ call, and a modulus is applied on the index to keep it within the range of classifiers in the ensemble.
 So classifier $c_0$ is selected to train on the hybrid window, containing a single tuple at the moment.
 
-At this point, the first iteration of the interleaved test-then-train loop has terminated, and the framework computes the global metrics required (accuracy, kappa statistics, etc) as well as over a sliding window of the last 200 instances.
+At this point, the first iteration of the interleaved test-then-train loop has terminated, and the framework computes the global metrics required (accuracy, kappa statistics, etc.) as well as over a sliding window of the last 200 instances.
 
 \begin{algorithm}
 \caption{Data processing pipeline\label{alg:pipeline_pseudocode}}
@@ -412,4 +412,4 @@ At this point, the first iteration of the interleaved test-then-train loop has t
 %----------------------------------------------------------------------------------------
 
 \section{Summary}
-Over the course of this chapter, we have introduced our RGTDSMF methodology. The first was to propose a new weighting function for our ensemble classifier. The second was a novel windowing technique for classifiers within an ensemble that delays their training. The third was investigating how implementing our ensemble to self-train on a portion of the training data could influence its performance. The fourth and final contribution was to extend FHDDM/S to operate without any knowledge of the ground truth. We have described the components of our methodology and their algorithms.
+Throughout this chapter, we have introduced our RGTDSMF methodology. The first was to propose a new weighting function for our ensemble classifier. The second was a novel windowing technique for classifiers within an ensemble that delays their training. The third was investigating how implementing our ensemble to self-train on a portion of the training data could influence its performance. The fourth and final contribution was to extend FHDDM/S to operate without any knowledge of the ground truth. We have described the components of our methodology and their algorithms.

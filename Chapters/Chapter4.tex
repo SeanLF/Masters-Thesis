@@ -1,4 +1,4 @@
-	% Chapter 4
+
 
 \chapter{Experimental Design\label{chapter:experimental_design}} % Main chapter title
 In this chapter, we will first cover the software and hardware specifications, briefly go over the framework that we extended, describe the various datasets used, explain the experimental setup and the evaluation metrics, and we will cover how we plan to compare the contributions listed in the previous chapter to the state of the art; or in the case of potential improvements, how they perform in regards to the original version of each respective algorithm.
@@ -44,16 +44,16 @@ radius & 0.15       & 0.2        & 0.25       & 0.3        \\ \hline
 As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set contains abrupt concept drifts, with noise-free examples. It has only two relevant numerical attributes, for which the values are uniformly distributed in [0, 1]. Before the concept drift, all instances for values below the curve $y = sin(x)$ are classified as \textbf{positive}. Then, after the concept drift, the rule is reversed; therefore the values below the curve become \textbf{negative}. The drifts were generated at every twenty thousand (20 000) instances.
 
 \subsection{$MIXED$}
-As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set contains abrupt concept drifts and uses four relevant attributes. Two of which are boolean, let them be $v$ and $w$; and the other two attributes are numerical, in [0, 1]. Instances belong to the positive class if two of three conditions are met: $v$ is true, $w$ is true, $y < 0.5 + 0.3 \times sin(3\pi x)$. For each concept drift, the conditions are reversed, meaning that if the conditions are met, it'll be a positive instance, then after the drift, it will be a negative instance. The abrupt concept drifts occur at every twenty thousand (20 000) instances.
+As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set contains abrupt concept drifts and uses four relevant attributes. Two of which are boolean, let them be $v$ and $w$; and the other two attributes are numerical, in [0, 1]. Instances belong to the positive class if two of three conditions are met: $v$ is true, $w$ is true, $y < 0.5 + 0.3 \times sin(3\pi x)$. For each concept drift, the conditions are reversed, meaning that if the conditions are met, it will be a positive instance, then after the drift, it will be a negative instance. The abrupt concept drifts occur at every twenty thousand (20 000) instances.
 
 \subsection{Streaming Ensemble Algorithm generator}
-First described in \cite{street2001streaming} by Street and Kim, the Streaming Ensemble Algorithm (SEA) is used to generate streams with abrupt concept drift. It is composed of three numerical attributes of values in [0, 10], and only the first two attributes are relevant. For each instance, the class is determined by checking if the sum of the two relevant attributes passes a threshold value. Let $f_1$ and $f_2$ be the two numerical relevant attributes, and $\theta$ the threshold. An instance belongs to class one if $f_1 + f_2 <= \theta$. As in Street's paper, our stream has four concepts, with the threshold values for each being 8, 9, 7 and 9.5. We generated a stream of one hundred thousand instances, from zero to twenty percent noise, in five percent increments ($\{0; 5; 10; 15; 20\%\}$). Drifts, therefore, occur at every twenty-five thousand instances
+First described in \cite{street2001streaming} by Street and Kim, the Streaming Ensemble Algorithm (SEA) is used to generate streams with abrupt concept drift. It is composed of three numerical attributes of values in [0, 10], and only the first two attributes are relevant. For each instance, the class is determined by checking if the sum of the two relevant attributes passes a threshold value. Let $f_1$ and $f_2$ be the two numerical relevant attributes, and $\theta$ the threshold. An instance belongs to class one if $f_1 + f_2 <= \theta$. As in Street's paper, our stream has four concepts, with the threshold values for each being 8, 9, 7 and 9.5. We generated a stream of one hundred thousand instances, from zero to twenty percent noise, in five percent increments ($\{0; 5; 10; 15; 20\%\}$). Drifts, therefore, occur at every twenty-five thousand instances.
 
 \section{Estimation techniques}
 In an offline setting, with static data, the most common evaluation method used is called cross-validation. However, given how little time a model has to learn from each instance due to the velocity of data streams and the risk of concept drift. It is for that reason that cross-validation is not suited for an online setting, but the two following techniques are.
 
 \subsection{Holdout}
-As the name implies, two distinct data sets are required for this technique: a training data set to train a model, and another to test it.  Cross-validation is typically used in offline static data mining, but is too computationally heavy and/or can be too time-consuming in a streaming setting, and therefore the validation step is skipped and performance is measured against a single holdout set.\cite{bifet2009data}
+As the name implies, two distinct data sets are required for this technique: a training data set to train a model, and another to test it.  Cross-validation is typically used in offline static data mining, but is too computationally heavy and/or can be too time-consuming in a streaming setting, and therefore the validation step is skipped, and performance is measured against a single holdout set.\cite{bifet2009data}
  
 This technique is most useful when the training and testing sets have already been defined, as it makes comparing results from different studies possible.
 In order to track performance, the model is evaluated periodically, but not too frequently to avoid negatively impacting performance.
@@ -63,7 +63,7 @@ The holdout data set can be sourced from new tuples arriving from the data strea
 It should be sufficient to safely use a single static holdout set if we make the assumption that there is no concept drift. Past studies consider test sets of over tens of thousands of instances to also be sufficient. 
 
 \subsection{Interleaved test-then-train, or prequential}
-Another evaluation method is the so-called prequential evaluation, also known as the interleaved test-then-train method. Again, as the name suggests, the evaluation method consists in first testing the classifier on a given set of instances, then immediately training the classifier on that same set. The evaluation strategy, therefore, ensures that the model has not previously seen testing tuples, and no holdout testing set is necessary, and the accuracy of the model is therefore incrementally updated. This method also allows us to use all of the data for both testing and training. Furthermore, as there is more testing data, each instance used to assess the accuracy and performance of the model weighs less than it would have in a smaller holdout test set.
+Another evaluation method is the so-called prequential evaluation, also known as the interleaved test-then-train method. Again, as the name suggests, the evaluation method consists of first testing the classifier on a given set of instances, then immediately training the classifier on that same set. The evaluation strategy, therefore, ensures that the model has not previously seen testing tuples, and no holdout testing set is necessary, and the accuracy of the model is therefore incrementally updated. This method also allows us to use all of the data for both testing and training. Furthermore, as there is more testing data, each instance used to assess the accuracy and performance of the model weighs less than it would have in a smaller holdout test set.
 
 For this thesis, all experiments will be done using the interleaved test-then-train evaluation technique.
 
@@ -121,7 +121,7 @@ $\kappa^+$ is defined in equation \ref{eq:kappa_plus}
 \begin{equation}
 \label{eq:kappa_plus}
 \kappa^+=\frac{p_0-p'_e}{1-p'_e}
-\end{equation}where $p_0$ is the classifier's prequential accuracy and $p'_e$ is the accuracy of a no-change classifier. The no-change classifier predicts that the next class will be the same as the last seen class label. Just like the original $\kappa$ statistic, $\kappa^+\in [0, 1]$. Refer to \cite{DBLP:conf/pkdd/2013-1} for the equations relating to calculating $p_0$ and $p'_e$. $\kappa^+$ is also sometimes referred to as $\kappa$-temporal \cite{vzliobaite2015evaluation}.
+\end{equation}where $p_0$ is the classifier's prequential accuracy and $p'_e$ is the accuracy of a no-change classifier. The no-change classifier predicts that the next class will be the same as the last seen class label. Just like the original $\kappa$ statistic, $\kappa^+\in [0, 1]$. Refer to \cite{DBLP:conf/pkdd/2013-1} for the equations relating to calculating $p_0$ and $p'_e$. $\kappa^+$ is also sometimes referred to as $\kappa$-temporal ($\kappa_t$) \cite{vzliobaite2015evaluation}.
 
 \subsubsection{$\kappa_m$ statistic}
 The $\kappa_m$ statistic is another improvement upon the regular to indicate whether a classifier is performing better than a majority-class classifier \cite{bifet2015efficient}. Its definition is given in equation \ref{eq:kappa_m}.
@@ -136,10 +136,10 @@ While the measures presented in \ref{section:performance_measures} are useful fo
 
 Popular choices for statistical tests in the machine learning community for comparing multiple classifiers across multiple cases are the Analysis of Variance (ANOVA) and the Friedman test. 
 
-The ANOVA test assumes a normal data distribution whereas the Friedman test does not. It is for this reason, coupled with the fact that the Friedman test is also non-parametric, that we have chosen the latter as our choice for a statistical significance test. 
+The ANOVA test assumes a normal data distribution whereas the Friedman test does not. It is for this reason, coupled with the fact that the Friedman test is also non-parametric, that we have chosen the latter as our choice for a statistical significance test. However, the Friedman test is not applicable when only comparing two algorithms on multiple domains; for that reason, we will be using the Wilcoxon test in those scenarios.
 
 \subsubsection{Wilcoxon's Signed-Rank test}
-TODO
+This test is a non-parametric version of the matched-paired \textit{t}-test. It is used to test if two paired samples come from the same distribution.
 
 \subsubsection{The Friedman test}
 The test ranks each algorithm separately for each data set and computes a test statistic using the variation within the ranks and the variation within the error variation. The Friedman statistic $\chi^2_F$ is defined in equation \ref{eq:friedman_statistic}, taken from \cite{japkowicz2011evaluating};
@@ -149,7 +149,7 @@ The test ranks each algorithm separately for each data set and computes a test s
 \chi^2_F = \frac{SS_{Total}}{SS_{Error}}=\bigg[\frac{12}{n\times k\times(k+1)}\times\sum_{j=1}^k(R_.j)^2\bigg]-3\times n \times (k+1)
 \end{equation}where $n$ is the number of data sets, $k$ is the number of algorithms considered, and $R$ simply denotes ranking. And finally $(k-1)$ is known as the degrees of freedom.
 
-The Friedman statistic ($\chi^2_F$) is then looked up in the $\chi^2$ distribution table to obtain a \textit{probability value} (p-value), signifying $P(\chi^2_{k-1} \geq \chi^2_F )$. This p-value is widely used in null-hypothesis testing by measuring it against a threshold value called a significance level. A lower p-value means a higher statistical significance. Traditionally, the significance level is either 1\% or 5\%, and denoted as $\alpha$. The null hypothesis is accepted if the p-value is greater than $\alpha$, otherwise, $H_1$ is accepted and the null hypothesis is rejected.
+The Friedman statistic ($\chi^2_F$) is then looked up in the $\chi^2$ distribution table to obtain a \textit{probability value} (p-value), signifying $P(\chi^2_{k-1} \geq \chi^2_F )$. This p-value is widely used in null-hypothesis testing by measuring it against a threshold value called a significance level. A lower p-value means a higher statistical significance. Traditionally, the significance level is either 1\% or 5\%, and denoted as $\alpha$. The null hypothesis is accepted if the p-value is greater than $\alpha$; otherwise, $H_1$ is accepted, and the null hypothesis is rejected.
 
 When the null hypothesis is rejected following a Friedman test, post hoc Nemenyi tests are recommended by Japkowicz and Shah in \cite{japkowicz2011evaluating}.
 
@@ -167,12 +167,12 @@ q=\frac{\overline{R}_{.j1}-\overline{R}_{.j2}}{\sqrt{\frac{k(k+1)}{6n}}}
 For these experiments, the following classifiers were used: Gaussian Naive Bayes (G\_NB), Leveraging Bagging, Stochastic Gradient Descent (SGD), Multinomial Naive Bayes (M\_NB), and our Voting Ensemble composed of three sub-classifiers. The three classifiers inside the voting ensemble are the SGD, M\_NB, and G\_NB. Finally, we also used a no-change classifier as well as a majority-class classifier as our baselines.
 
 Readers familiar with classification algorithms might know that some advantages of NB are its scalability, high accuracy, ability to use prior knowledge, and the fact that it has comparable performance to decision trees and neural networks. NB is incrementally more confident, and easy to implement. However, the downsides are its significant compute costs, and that using conditional dependencies reduces accuracy due to the real dependency between attributes.
-SGDs have generally high predictive accuracy, generalize well meaning that they are robust and good for noisy domains, and good for incremental learning. However, they are known to have a slow training time, may fail to converge, and output a black box model which means that results cannot be interpreted.
+SGDs have generally high predictive accuracy, generalize well meaning that they are robust and suitable for noisy domains, and good for incremental learning. However, they are known to have a slow training time, may fail to converge, and output a black box model which means that results cannot be interpreted.
 Leveraging bagging \cite{bifet2010leveraging} is an improvement over the Online Bagging technique of Oza and Russel. They claim to introduce more randomization to the online bagging algorithm to achieve a more accurate classifier. However, the authors noted that subagging, half subagging, and bagging with-out replacement ran faster but were marginally less accurate.
 
 Unless stated otherwise, our default parameters for the experiments are listed in table \ref{table:default_exp_parameters} and the default parameters for the classifiers are listed in table \ref{table:default_clf_parameters}. These values were obtained through extensive experimentation.
 
-Finally, each experiment is run on five different examples each sourced from three synthetic data sets (5 examples of $SINE1$, another 5 of $CIRCLES$, etc.) and five streams generated by the SEA generator with levels of noise in increments of 5\% (from 0\% to 20\%), for a grand total of eighteen (18) streams of one hundred thousand (100000) instances.
+Finally, each experiment is run on five different examples each sourced from three synthetic data sets (5 examples of $SINE1$, another 5 of $CIRCLES$, etc.) and three streams generated by the SEA generator with levels of noise in increments of 10\% (from 0\% to 20\%), for a grand total of eighteen (18) streams of one hundred thousand (100000) instances.
 
 \begin{table}[]
 \centering
@@ -204,7 +204,7 @@ Stochastic Gradient Descent & \begin{tabular}[c]{@{}l@{}}loss=log\\ penalty=l2\\
 \end{tabular}
 \end{table}
 
-Our voting ensemble takes seven (7) different parameters, some of which are conditional upon the value of others. The parameters, and the values they can take are shown in table \ref{table:ensemble_params}. Some combinations of parameters are not allowed such as combining boolean voting with non-boolean drift detector content, or using probability voting with weighted probability drift content. In the worst case, when counting the illegal combinations, there are $4\times2\times3\times5\times4\times3\times2=1880$ combinations. There are 1110 permitted parameter combinations.
+Our voting ensemble takes seven (7) different parameters, some of which are conditional upon the value of others. The parameters and the values they can take are shown in table \ref{table:ensemble_params}. Some combinations of parameters are not allowed such as combining boolean voting with non-boolean drift detector content, or using probability voting with weighted probability drift content. In the worst case, when counting the illegal combinations, there are $4\times2\times3\times5\times4\times3\times2=1880$ combinations. There are 1110 permitted parameter combinations.
 
 \begin{table}[]
 \caption{Voting ensemble parameters\label{table:ensemble_params}}
@@ -221,7 +221,7 @@ Drift detector count & 1 or many \\ \hline
 \end{tabular}
 \end{table}
 
-We will run our algorithm for each combination of the parameters stated above, and will measure  $\kappa_t$ and the execution time for each of the eighteen data sets. We will then evaluate how each parameter affects the execution time and $\kappa_t$.
+We will run our algorithm for each permitted combination of the parameters stated above, and will measure  $\kappa_t$ and the execution time for each of the eighteen data sets. We will then evaluate how each parameter affects the execution time and $\kappa_t$.
 
 We will test the null hypothesis that all values of a given parameter will perform similarly in regards to a given measure when we set all other parameters. We will repeat this experiment over all combinations of the "other" parameters.
 
@@ -229,16 +229,16 @@ For parameters that have only two values, we will use the Wilcoxon test to deter
 
 Otherwise, for parameters that can take more than two values, we will use the Friedman test; and when the Friedman test rejects the null hypothesis, we will use a post-hoc Nemenyi test to determine which pairs of values lead to statistically significant differences in the measured metrics.
 
-We will be comparing the values of each parameter across all legal parameter combinations. We will then be able to see if a parameter value is often ranked better and if it seems to influence the measures even when changing the "other" set parameters. In other words, we want to see if a parameter is likely to frequently affect our measured metrics no matter of the other parameters.
+We will be comparing the values of each parameter across all permitted parameter combinations. We will then be able to see if a parameter value is often ranked better and if it seems to influence the measures even when changing the "other" set parameters. In other words, we want to see if a parameter is likely to frequently affect our measured metrics no matter of the other parameters.
 
 After we determine the impact of the parameter values on the measured metrics, we will use the post-hoc Nemenyi test to compare each parameter combination to determine the top ranking combination for each measured metric and over both metrics.
 
-Once we obtain the parameter combinations that lead to the best results, we will compare them to the state of the art algorithm (leveraging bagging). We will, also, be comparing these results with no-change and majority-class classifiers (while using 100\% ground truth and sliding windows). The leveraging bagging classifier is implemented with a built-in ADWIN drift detector. As we will be comparing at least 3 algorithms, we will employ the Friedman test in conjunction with the post-hoc Nemenyi test where appropriate to assess the statistically significant differences in the results.
+Once we obtain the parameter combinations that lead to the best results, we will compare them to the state of the art algorithm (leveraging bagging). We will, also, be comparing these results with no-change and majority-class classifiers (trained with 100\% labelled examples and sliding windows). The leveraging bagging classifier is implemented with a built-in ADWIN drift detector. As we will be comparing at least 3 algorithms, we will employ the Friedman test in conjunction with the post-hoc Nemenyi test where appropriate to assess the statistically significant differences in the results.
 
 To sum it up quickly:
 \begin{enumerate}
 \item compare each value of one parameter (while setting other parameters to a given value), multiple times and each time changing the other parameter combination to see the impact of that one parameter value on the measured metrics
-\item rank the reults of each parameter combination
+\item rank the results of each parameter combination
 \item use those rankings to compare the top parameter combinations to the state of the art
 \end{enumerate}
 

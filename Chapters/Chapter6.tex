@@ -1,7 +1,27 @@
 % Chapter 6
 
-\chapter{Conclusion} % Main chapter title
-
-\label{Chapter6} % For referencing the chapter elsewhere, use \ref{Chapter3} 
+\chapter{Conclusion\label{Chapter6}} % Main chapter title
 
 %----------------------------------------------------------------------------------------
+
+This thesis focused on improving semi-supervised learning from evolving streams without the use of clustering techniques. The goal of this study was to propose or extend existing algorithms to work with fewer labelled examples, or none at all. Experiments were conducted in order to compare the performance of our framework against that of the state of the art in terms of predictive accuracy and execution time, while considering the percentage of labelled instances used at each stage of learning. This chapter discusses our contributions and presents opportunities for future work.
+
+%----------------------------------------------------------------------------------------
+ 
+\section{Contributions}
+A great deal of research is being conducted to develop algorithms for supervised learning of evolving streams. These techniques are usually ensemble-based, and typically make use of either boosting or bagging. This research is necessary to understand how well an algorithm can learn from an evolving stream, but the use of supervised training is to online learning as training wheels are to learning how to ride a bicycle. In the real-world, the assumption that true labels will arrive on time is unequivocally unreasonable. We introduce our semi-supervised hybrid-windowing ensembles for learning in evolving streams as our first attempt to deal with this issue without using clustering techniques.
+
+We first proposed a voting ensemble that uses a modified soft voting approach, by weighting each classifier’s predictive confidence. Next, we developed a novel windowing type for ensembles, as sliding windows are very time consuming and regular tumbling windows are not a suitable replacement. Our windowing technique can be considered a hybrid of the two: we train each sub-classifier in the ensemble with tumbling windows, but delay training in such a way that only one sub-classifier can update its model per iteration. We also extended selective self-training by ignoring its heuristic: training classifiers using all predicted examples, and not only those with high predictive confidence. Finally, we extended an existing concept drift detector to operate without any labelled data, by using a sliding window of our ensemble’s prediction confidence, instead of a boolean value indicating whether, or not, the ensemble predicted correctly.
+
+%----------------------------------------------------------------------------------------
+
+\section{Future Work}
+Our framework took very little execution time, far below that of current state of the art techniques, and achieved comparable predictive accuracy, while also using 20\% fewer labelled instances for training, and 100\% less for detecting drifts. We believe that higher predictive accuracy can be achieved, and by using even fewer labelled data, without drastically impacting the execution time.
+
+In order to reduce the quantity of labelled data used for (pre-)training, we can introduce specialised domain knowledge into the learning cycle. An interactive active learning approach can be used, as seen in \cite{floyd2017activetext}, where an intuitive online interface is used to request labels, from an oracle, for any number of uncertain data instances to train on instances that are representative of the stream, or those that classifiers find difficult.
+
+Furthermore, our framework can be improved by incorporating ideas that have been proven to work such as intelligent window sizes, and replacing classifiers with a bad predictive accuracy streak. To deal with recurring concepts, we can incorporate weighted summarising classifiers as seen in Learn$^{++}$.NSE \cite{elwell2011incremental}, however, the memory issue would need to be addressed.
+
+Additionally, our framework does not guarantee diversity among the classifiers in the ensemble. A possible approach would be to replace the cyclic training from hybrid windows with a stochastic method. In other words, instead of training the classifiers in the ensemble in the same cyclical sequential manner, a classifier would be chosen at random to be trained from the new hybrid window.
+
+Another area to be explored is how our framework performs when dealing with mixed concept drifts, and perform a study using a real-world data set.

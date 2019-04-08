@@ -2,15 +2,15 @@
 
 \chapter{Experimental Evaluation and Discussion} % Main chapter title
 
-Recall from the previous chapter that in order to evaluate our contributions, we will need to compare how our algorithm performs against 4 different data sets. We will be using the $\kappa_t$ metric, as well as the execution time. Finally, we will also be considering the percentage of labelled data is used to train our ensemble.
-{In this chapter, we will be investigating how each parameter influences each measured metric using omnibus Wilcoxon and Friedman tests, and in the case of the latter, post-ho\textbf{}c Nemenyi tests to further confirm which pairs of algorithms differ in performance. Next, we will compare all of the parameter combinations together by ranking them by each metric. This is done to find any trends that lead to better performance. Finally, we will compare our approach to the state of the art}
+Recall from the previous chapter that in order to evaluate our contributions, we will need to compare how our algorithm performs against four different data sets. We will be using the $\kappa_t$ metric, as well as the execution time. Finally, we will also be considering the percentage of labelled data is used to train our ensemble.
+{In this chapter, we will be investigating how each parameter influences each measured metric using omnibus Wilcoxon and Friedman tests, and in the case of the latter, post-hoc Nemenyi tests to further confirm which pairs of algorithms differ in performance. Next, we will compare all of the parameter combinations together by ranking them by each metric. This is done to find any trends that lead to better performance. Finally, we will compare our approach to the state of the art}
 
 \label{Chapter5} % For referencing the chapter elsewhere, use \ref{Chapter3} 
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{./images/kappa_vs_time}
+\begin{sidewaysfigure}
+  \includegraphics[width=\linewidth]{./images/chapter5/kappa_vs_time}
 \caption{\label{fig:kappa_vs_time}$\kappa_t$ in relation to time, across all parameter combinations}
-\end{figure}
+\end{sidewaysfigure}
 Figure \ref{fig:kappa_vs_time} shows that as the execution time increases, $\kappa_t$ stays roughly constant. The majority of the changes seem to be due to the various parameter combinations. This is a good sign as it suggests that the predictive accuracy of our model is at most very loosely tied to the execution time of its algorithm.
 
 \section{Investigating how each parameter influences each metric}
@@ -50,7 +50,7 @@ $\kappa_t$ & 19 & 59\% & 206 & 48\% & 13 & 40\% & 217 & 51\% \\ \hline
 
 \begin{figure}
 \centering
-  \includegraphics[width=\linewidth]{./images/wilcoxon_drift_detector_count_pie}
+  \includegraphics[width=\linewidth]{./images/chapter5/wilcoxon_drift_detector_count_pie}
 \caption{\label{fig:wilcoxon_drift_detector_count_pie}Pie chart illustrating table \ref{table:wilcoxon_significant}}
 \end{figure}
 
@@ -58,7 +58,7 @@ $\kappa_t$ & 19 & 59\% & 206 & 48\% & 13 & 40\% & 217 & 51\% \\ \hline
 
 When we dig deeper into the \textit{Drift Detector Count} parameter, as we can see from table \ref{table:wilcoxon_drift_detector_count} and figure \ref{fig:wilcoxon_drift_detector_count_pie}, for the execution time metric, the parameter value \textit{1 for ensemble} is evidently the best choice as it ranks best across 92\% of parameter combinations, and best across 99\% of statistically significant different results. For the $\kappa_t$ metric, it is not as clear cut; both \textit{1 for ensemble} and \textit{1 per classifier} rank best among about 50\% of the time. 
 
-The results we found lead us to believe that choosing the \textit{1 for ensemble} value for the \textit{Drift Detector Count} parameter is very beneficial in reducing the execution time of the algorithm. While this finding might not hold across all data streams examined, it is likely that choosing this value for the parameter will decrease execution time significantly. Logically, it makes perfect sense that choosing \textit{1 for ensemble} over \textit{1 per classifier} leads to lower execution time because the implementation of the former is such that it performs only a fraction of the operations of the latter. Additionally, we also found that none of the parameter values consistently outranked the others in predictive accuracy, and we therefore cannot say if choosing a particular parameter value will result in better values for the $\kappa_t$ metric. We will later be looking at the raw values to see if a particular drift detector count leads to better predictive accuracy.
+The results we found lead us to believe that choosing the \textit{1 for ensemble} value for the \textit{Drift Detector Count} parameter is very beneficial in reducing the execution time of the algorithm. While this finding might not hold across all data streams examined, it is likely that choosing this value for the parameter will decrease execution time significantly. Logically, it makes perfect sense that choosing \textit{1 for ensemble} over \textit{1 per classifier} leads to lower execution time because the implementation of the former is such that it performs only a fraction of the operations of the latter. Additionally, we also found that none of the parameter values consistently outranked the others in predictive accuracy, and we, therefore, cannot say if choosing a particular parameter value will result in better values for the $\kappa_t$ metric. We will later be looking at the raw values to see if a particular drift detector count leads to better predictive accuracy.
 
 \subsubsection{Window Type}
 As for the \textit{Window Type} parameter, $97\%$ of parameter combinations show a significant statistical difference in the execution time depending on the value of the window type. This indicates that the parameter value heavily influences the execution time of the algorithm, independently of other parameter values. When it comes to the $\kappa_t$ metric, over half (60\%) of combinations proved to show a statistically significant difference in predictive performance. This suggests that the \textit{Window Type} parameter could have some non-negligible influence over the $\kappa_t$ metric.
@@ -78,7 +78,7 @@ $\kappa_t$ & 9 & 2\% & 86 & 40\% & 319 & 97\% & 125 & 59\% \\ \hline
 
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/wilcoxon_window_type_pie}
+  \includegraphics[width=\linewidth]{./images/chapter5/wilcoxon_window_type_pie}
 \caption{\label{fig:wilcoxon_window_type_pie}Pie chart illustrating table \ref{table:wilcoxon_window_type}}
 \end{figure}
 
@@ -129,8 +129,8 @@ As other parameters can take more than two values, we must use the Friedman test
 
 \subsubsection{Batch Size}
 
-As we can see from table \ref{table:nemenyi_significant_breakdown}, only 1 combination of parameters among 330 were significantly statistically different when considering the $\kappa_t$ metric for the batch size parameter, which is a negligible amount. As for the execution time metric, we can see that almost $87\%$ of parameter combinations proved to show a significant statistical difference. This confirms our expectations that changing only the batch size has a large impact on the execution time of the algorithm but no significant impact on its predictive accuracy.
-The first row of table \ref{table:nemenyi_significant_breakdown_aggregate} indicates that there are 7 variations of rankings of batch size rankings for the $\kappa_t$ metric; the second line indicates that there are 2 variations of rankings and pairs of parameters that were significantly statistically different and 2 variations of ranks for batch sizes that were insignificant. These values are seen in table \ref{table:batch_size_rankings} and figure \ref{fig:batch_size_rankings_pie}.
+As we can see from table \ref{table:nemenyi_significant_breakdown}, only one combination of parameters among 330 were significantly statistically different when considering the $\kappa_t$ metric for the batch size parameter, which is a negligible amount. As for the execution time metric, we can see that almost $87\%$ of parameter combinations proved to show a significant statistical difference. This confirms our expectations that changing only the batch size has a significant impact on the execution time of the algorithm but no significant impact on its predictive accuracy.
+The first row of table \ref{table:nemenyi_significant_breakdown_aggregate} indicates that there are seven variations of rankings of batch size rankings for the $\kappa_t$ metric; the second line indicates that there are two variations of rankings and pairs of parameters that were significantly statistically different and two variations of ranks for batch sizes that were insignificant. These values are seen in table \ref{table:batch_size_rankings} and figure \ref{fig:batch_size_rankings_pie}.
 
 \begin{table}[]
 \centering
@@ -153,25 +153,25 @@ The first row of table \ref{table:nemenyi_significant_breakdown_aggregate} indic
 \end{table}
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/batch_size_rankings_pie}
+  \includegraphics[width=\linewidth]{./images/chapter5/batch_size_rankings_pie}
 \caption{\label{fig:batch_size_rankings_pie}Pie chart illustrating table \ref{table:batch_size_rankings}}
 \end{figure}
 
 Let us examine the pie charts illustrating the rankings of the \textit{Batch size} parameter values.
 We will first examine the results for the execution time. At first glance, we notice that \textit{100} clearly ranks first over the majority of parameter combinations, followed by \textit{75} over a minority of combinations.
 For the $\kappa_t$ metric, the rankings are less clear. \textit{25} seems to rank first more frequently (across $45\%$ of parameter combinations), whereas \textit{75} and \textit{100} rank first across $26\%$ of parameter combinations each. These rankings do not tell us how much the difference is across parameter combinations. By this, we mean that while a parameter value may rank first across a larger percentage of parameter combinations, it may actually perform worse than another value over a smaller percentage of parameter combinations.
-In any case, the results indicate that there is another trade-off to be made in regards to the batch size parameter between predictive accuracy and execution time. Again, we expected these results as a batch size of 100 allows the ensemble to learn from more examples at once, which reduces the quantity of operations that would have to be repeated were we to use a batch size of 25 for example, where each operation down the line would be run 4 times instead of only 1 time. As for predictive accuracy, \textit{25} has a slight advantage over the other parameter values possibly because there is a better chance that a drift wreaks havoc on a sub-classifier's ability to train on a batch of \textit{75} or \textit{100} than on a batch of \textit{25}. For a batch of \textit{25}, the sub-classifiers can be reset sooner, and the next batch may be easier to model.
+In any case, the results indicate that there is another trade-off to be made in regards to the batch size parameter between predictive accuracy and execution time. Again, we expected these results as a batch size of 100 allows the ensemble to learn from more examples at once, which reduces the number of operations that would have to be repeated were we to use a batch size of 25 for example, where each operation down the line would be run 4 times instead of only 1 time. As for predictive accuracy, \textit{25} has a slight advantage over the other parameter values possibly because there is a better chance that a drift wreaks havoc on a sub-classifier's ability to train on a batch of \textit{75} or \textit{100} than on a batch of \textit{25}. For a batch of \textit{25}, the sub-classifiers can be reset sooner, and the next batch may be easier to model.
 
 \subsubsection{Drift Reset Type}
 
-Let us now investigate the Drift Reset Type parameter. As we can see from table \ref{table:nemenyi_significant_breakdown}, only a single out of 330 parameter combinations showed a significant statistical difference in parameter values when considering the $\kappa_t$ metric, whereas about $20\%$ of parameter values showed a statistical significant difference in parameter values when considering the execution time metric. This suggests that the value of the drift reset type parameter does not have a significant impact over other values on the measured metrics.
+Let us now investigate the Drift Reset Type parameter. As we can see from table \ref{table:nemenyi_significant_breakdown}, only a single out of 330 parameter combinations showed a significant statistical difference in parameter values when considering the $\kappa_t$ metric, whereas about $20\%$ of parameter values showed a statistically significant difference in parameter values when considering the execution time metric. This suggests that the value of the drift reset type parameter does not have a significant impact over other values on the measured metrics.
 Table \ref{table:nemenyi_significant_breakdown_aggregate}, lists the number of different rankings found in table \ref{table:drift_reset_type_rankings} over the measured metrics, depending on whether results showed a statistical significant difference.
 
 Let us examine table \ref{table:drift_reset_type_rankings} or better yet, the pie charts seen in figure \ref{drift_reset_type_rankings_pie} illustrating the rankings of the \textit{Drift Reset Type} parameter values.
-Again, we will first examine the results for the execution time. At first glance, we notice that \textit{blind resets} clearly ranks first the least over the parameter combinations. \textit{Reset all} ranks first across half of the parameter combinations and \textit{partial resets} over about a third of them. This is a good sign, and expected. Since sub-classifiers must be reset more frequently, they must be completely re-trained on data, which also prevents them from learning from a larger set of older data. This might be good for streams with very frequent drifts, but those where they appear infrequently, blindly resetting the classifier prevents it from remembering possibly useful historical data.
+Again, we will first examine the results for the execution time. At first glance, we notice that \textit{blind resets} clearly ranks first the least over the parameter combinations. \textit{Reset all} ranks first across half of the parameter combinations and \textit{partial resets} over about a third of them. This is a good sign, and expected. Since sub-classifiers must be reset more frequently, they must be completely re-trained on data, which also prevents them from learning from a larger set of older data. This might be good for streams with very frequent drifts, but those where they infrequently appear, blindly resetting the classifier prevents it from remembering possibly useful historical data.
 
-For the $\kappa_t$ metric, the rankings are not as clear. Again, we must remember that these rankings do not tell us the difference across parameter combinations, meaning that while a parameter value may rank first across a larger percentage of parameter combinations, it may perform less well than another value over a smaller percentage of parameter combinations.
-In any case, the results indicate that each parameter value ranks first across a third of parameter combinations. This does not allow us to conclude much, other than blind resets may perform just as well as resetting every sub-classifier or only a minority of them. It could be that the sub-classifiers are not very apt at learning from the data, or that resetting the sub-classifiers is not very effective. Another reason could be attributed to the way partial drift resets work, in that each sub-classifier has a chance of being reset, meaning that there is a chance that the offending sub-classifier that is not properly adapting to the concept drift is not reset. A more thorough investigation is unfortunately outside of the scope of this work, due to time constraints. It could also be that the predictive accuracy can not improve much after a drift due to the limitations of the sub-classifiers to model the data effectively. Either way, this is truly unfortunate, as it suggests that changing how often and how many sub-classifiers are reset does not seem to affect the $\kappa_t$ metric.
+For the $\kappa_t$ metric, the rankings are not as clear. Again, we must remember that these rankings do not tell us the difference across parameter combinations, meaning that while a parameter value may rank first across a more significant percentage of parameter combinations, it may perform less well than another value over a smaller percentage of parameter combinations.
+In any case, the results indicate that each parameter value ranks first across a third of parameter combinations. This does not allow us to conclude much, other than blind resets may perform just as well as resetting every sub-classifier or only a minority of them. It could be that the sub-classifiers are not very apt at learning from the data, or that resetting the sub-classifiers is not very useful. Another reason could be attributed to the way partial drift resets work, in that each sub-classifier has a chance of being reset, meaning that there is a chance that the offending sub-classifier that is not correctly adapting to the concept drift is not reset. A more thorough investigation is unfortunately outside of the scope of this work, due to time constraints. It could also be that the predictive accuracy cannot improve much after a drift due to the limitations of the sub-classifiers to model the data effectively. Either way, this is truly unfortunate, as it suggests that changing how often and how many sub-classifiers are reset does not seem to affect the $\kappa_t$ metric.
 These results indicate that blind resets perform almost as well as our other reset strategies, which may suggest that our drift reset strategy needs further investigation.
 
 \begin{table}[]
@@ -203,19 +203,19 @@ These results indicate that blind resets perform almost as well as our other res
 \end{table}
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/drift_reset_type_rankings_pie}
+  \includegraphics[width=\linewidth]{./images/chapter5/drift_reset_type_rankings_pie}
 \caption{\label{fig:drift_reset_type_rankings_pie}Pie chart illustrating table \ref{table:drift_reset_type_rankings}}
 \end{figure}
 
 \subsubsection{Ground Truth}
 
-Let us now investigate the Ground Truth parameter (\textbf{which indicates the percentage of labelled instances used to train our ensemble}). Table \ref{table:nemenyi_significant_breakdown} shows that less than one third of parameter combinations show a statistical significance difference for the $\kappa_t$ metric; but over $84\%$ for the execution time metric. This suggests that the value of the ground truth parameter has a measurable impact on the execution time, across a large portion of the other parameters, (almost) no matter their values.
+Let us now investigate the Ground Truth parameter (\textbf{which indicates the percentage of labelled instances used to train our ensemble}). Table \ref{table:nemenyi_significant_breakdown} shows that less than one-third of parameter combinations show a statistically significant difference for the $\kappa_t$ metric; but over $84\%$ for the execution time metric. This suggests that the value of the ground truth parameter has a measurable impact on the execution time, across a large portion of the other parameters, (almost) no matter their values.
 
-Table \ref{table:ground_truth_rankings} \textbf{shows that}, for the $\kappa_t$ metric, there are multiple possible options for ranking the parameter values. For those with a statistical significant difference, 100 performs better than 60. 100 ranks first across all parameter combinations over $98\%$ of the time, as expected. This is normal, as we expect our ensemble to better learn to model the streamed data from ground truth rather than from its own predictions of class label values, considering that it can enable our ensemble to learn from erroneously labelled data. It is a good sign, however, that there is no statistical significant difference for parameter values other than 100 and 60. It is logical that selecting a higher percentage of ground truth will lead to higher predictive accuracy, but we can allow for a trade-off between predictive accuracy and time.
+Table \ref{table:ground_truth_rankings} \textbf{shows that}, for the $\kappa_t$ metric, there are multiple possible options for ranking the parameter values. For those with a statistically significant difference, 100 performs better than 60. 100 ranks first across all parameter combinations over $98\%$ of the time, as expected. This is normal, as we expect our ensemble to better learn to model the streamed data from ground truth rather than from its own predictions of class label values, considering that it can enable our ensemble to learn from erroneously labelled data. It is a good sign, however, that there is no statistically significant difference for parameter values other than 100 and 60. It is logical that selecting a higher percentage of ground truth will lead to higher predictive accuracy, but we can allow for a trade-off between predictive accuracy and time.
 
-\textbf{We can also see}, from table \ref{table:ground_truth_rankings}, that there are a lot of different combinations for ranks and statistical significant different values for the execution time metric. $60\%$ ground truth ranks first across $74.31\%$ of parameter combinations, and $100\%$ ground truth ranks first across only $17.71\%$ of parameter values. When we exclude insignificant results, our previous observation remains true, but across a smaller percentage of parameter combinations, but only by $5\%$ to $10\%$. We can conclude that the using $60\%$ ground truth is more likely to decrease execution time. This is an unexpected finding, as we expected that using less ground truth would cause an increase in execution time by causing more drift detection events and therefore more model resets and retrains. However, it is possible that by using less ground truth, there are no drift detection events because the model is not able to properly learn from the data, so the model is never reset or retrained which might also explain why this parameter value also ranks as one of the worst in predictive accuracy.
+\textbf{We can also see}, from table \ref{table:ground_truth_rankings}, that there are a lot of different combinations for ranks and statistical significant different values for the execution time metric. $60\%$ ground truth ranks first across $74.31\%$ of parameter combinations, and $100\%$ ground truth ranks first across only $17.71\%$ of parameter values. When we exclude insignificant results, our previous observation remains true, but across a smaller percentage of parameter combinations, but only by $5\%$ to $10\%$. We can conclude that using $60\%$ ground truth is more likely to decrease execution time. This is an unexpected finding, as we expected that using less ground truth would cause an increase in execution time by causing more drift detection events and therefore more model resets and retrains. However, it is possible that by using less ground truth, there are no drift detection events because the model is not able to properly learn from the data, so the model is never reset or retrained which might also explain why this parameter value also ranks as one of the worst in predictive accuracy.
 
-When looking at the raw values, as \textbf{depicted} in figure \ref{fig:order_by_ground_truth}, we notice that the $\kappa_t$ metric does not change much over the parameter combinations, but rises noticeably starting when using $80\%$ ground truth. The regular peaks and valleys within each set of ground truth values (separated by black vertical lines) simply represent how other parameters affect $\kappa_t$. We also notice that the amount of ground truth has a strong effect over the sine1, mixed and particularly on the circles data sets. It may be that it is easier to model the data from SEA than from the other data sets, and therefore it does not need as much ground truth to build an accurate model. Not much can be said when looking at the raw values for the execution time metric other than that there may be fewer valleys in the section dedicated for the $60\%$ ground truth parameter.
+When looking at the raw values, as \textbf{depicted} in figure \ref{fig:order_by_ground_truth}, we notice that the $\kappa_t$ metric does not change much over the parameter combinations, but rises noticeably starting when using $80\%$ ground truth. The regular peaks and valleys within each set of ground truth values (separated by black vertical lines) represent how other parameters affect $\kappa_t$. We also notice that the amount of ground truth has a strong effect over the sine1, mixed and particularly on the circles data sets. It may be that it is easier to model the data from SEA than from the other data sets, and therefore it does not need as much ground truth to build an accurate model. Not much can be said when looking at the raw values for the execution time metric other than that there may be fewer valleys in the section dedicated for the $60\%$ ground truth parameter.
 
 \begin{table}[]
 \centering
@@ -251,16 +251,16 @@ When looking at the raw values, as \textbf{depicted} in figure \ref{fig:order_by
 \end{tabular}
 \end{table}
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{./images/ground_truth}
+\begin{sidewaysfigure}
+  \includegraphics[width=\linewidth]{./images/chapter5/ground_truth}
 \caption{\label{fig:order_by_ground_truth}$\kappa_t$ across all parameter combinations, ordered by ground truth}
-\end{figure}
+\end{sidewaysfigure}
 
 \subsubsection{Voting Type}
 
-And finally, we will investigate the Voting Type parameter. As we can see from table \ref{table:nemenyi_significant_breakdown}, none of the 180 parameter combinations proved to show a significant statistical difference for the $\kappa_t$ metric. However, a large portion of the parameter combinations showed a significant statistical significance for the execution time parameter ($85.56\%$ of combinations). This leads us to believe that the voting type does not have a major influence on the prediction accuracy. However, for execution time, there is a statistical significant difference present across a good majority of parameter combinations, leading us to believe that the significance remains true across a good portion of other parameter values.
+Finally, we will investigate the Voting Type parameter. As we can see from table \ref{table:nemenyi_significant_breakdown}, none of the 180 parameter combinations proved to show a significant statistical difference for the $\kappa_t$ metric. However, a large portion of the parameter combinations showed a significant statistical significance for the execution time parameter ($85.56\%$ of combinations). This leads us to believe that the voting type does not have a significant influence on predictive accuracy. However, for execution time, there is a statistically significant difference present across a good majority of parameter combinations, leading us to believe that the significance remains true across a good portion of other parameter values.
 
-As we can see from table \ref{table:nemenyi_significant_breakdown_aggregate}, there are not very many different possible rankings for both metrics. Indeed, there are 4 possible rankings for $\kappa_t$ and 5 for the execution time metric.
+As we can see from table \ref{table:nemenyi_significant_breakdown_aggregate}, there are not very many different possible rankings for both metrics. Indeed, there are four possible rankings for $\kappa_t$ and 5 for the execution time metric.
 
 Let us now examine table \ref{table:voting_type_rankings}, or better yet the pie charts from figure \ref{fig:voting_type_rankings_pie} for the \textit{Voting Type} parameter.
 We will first examine the results for the execution time. At first glance, it is clear that \textit{probability voting} ranks first amongst the majority of parameter combinations ($90\%$ of them), while \textit{weighted averaged probability voting} ranks first amongst the remaining $10\%$ of parameter combinations. We can say with the utmost certainty that \textit{averaged weighted probability voting} is not a good choice for a parameter value if the goal is to keep execution time low, as it ranks last over $99\%$ of parameter combinations. It makes sense that probability voting ranks first in execution time over most parameter combinations as its implementation is such that the two other voting schemes add to the operations computed for probability voting. In other words, for the other two voting schemes, the results obtained through probability voting is an intermediate result.
@@ -290,22 +290,22 @@ The best choice here appears to be \textit{probability voting}, but we will be a
 \end{table}
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/voting_type_rankings_pie}
+  \includegraphics[width=\linewidth]{./images/chapter5/voting_type_rankings_pie}
 \caption{\label{fig:voting_type_rankings_pie}Pie chart \textbf{illustrating} table \ref{table:voting_type_rankings}}
 \end{figure}
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{./images/raw_voting_type}
+\begin{sidewaysfigure}
+  \includegraphics[width=\linewidth]{./images/chapter5/raw_voting_type}
 \caption{\label{fig:order_by_voting_type}$\kappa_t$ across all parameter combinations, ordered by voting type}
-\end{figure}
+\end{sidewaysfigure}
 
 \subsection{Summary}
 The above results suggest that it is preferable to use the following parameter combination to obtain higher $\kappa_t$ values: [\textit{sliding, probability, 25, $100\%$, all, 1e}].
 \textbf{Otherwise,} to minimise the execution time, the results suggest to use [\textit{hybrid, probability, 100, $60\%$, all, 1e / 1c}].
 
-The differences lie with the window type, the batch size, the ground truth used and partially the drift detector count. The results above indicated that using probability voting,  1 detector per ensemble to detect drifts, and resetting all classifiers when drifts occur would lead to better $\kappa_t$ values and a lower execution time. For the batch size, window type, and the drift detector count, it is completely logical that choosing one value over another would change the execution time as they were, at least partially, implemented as time saving measures.
+The differences lie with the window type, the batch size, the ground truth used and partially the drift detector count. The results above indicated that using probability voting, one detector per ensemble to detect drifts, and resetting all classifiers when drifts occur would lead to better $\kappa_t$ values and a lower execution time. For the batch size, window type, and the drift detector count, it is entirely logical that choosing one value over another would change the execution time as they were, at least partially, implemented as time-saving measures.
 
-In the following section, we will rank the parameter combinations to determine if the ones listed two paragraphs above are truly top ranking.
+In the following section, we will rank the parameter combinations to determine if the ones listed two paragraphs above are indeed top ranking.
 
 \section{Comparing all parameter combinations}
 In this section, we aim to rank all 1110 parameter combinations \textbf{to determine which parameters perform the best, and those that perform the worst}. This will be done in three different configurations:
@@ -343,11 +343,11 @@ The values are split by vertical lines. See table \ref{table:ranking_parameter_v
 \end{table}
 
 \subsection{Ranking over $\kappa_t$}
-Figure \ref{fig:rank_kappa} shows the post-hoc Nemenyi graph ranking all parameter combinations. Due to the sheer number of parameter combinations, we cannot use the rankings to specify whether a pair of parameter combinations show a significant statistical difference. It does, however, allow us to see which are the top ranking parameter combinations for our algorithm. On the left hand side are the best ranking parameter combinations for the $\kappa_t$ metric, and on the right hand side are the worst performing ones.
-We'll consider the 50 top ranking parameter combinations, so the figure was cropped to reduce the size and aid readability.
+Figure \ref{fig:rank_kappa} shows the post-hoc Nemenyi graph ranking all parameter combinations. Due to the sheer number of parameter combinations, we cannot use the rankings to specify whether a pair of parameter combinations show a significant statistical difference. It does, however, allow us to see which are the top ranking parameter combinations for our algorithm. On the left-hand side are the best-ranking parameter combinations for the $\kappa_t$ metric, and on the right-hand side are the worst performing ones.
+We will consider the 50 top ranking parameter combinations, so the figure was cropped to reduce the size and aid readability.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/rank_kappa_cropped}
+  \includegraphics[width=\linewidth]{./images/chapter5/rank_kappa_cropped}
 \caption{\label{fig:rank_kappa}Ranking all parameter combinations, over $\kappa_t$}
 \end{figure}
 \begin{table}[]
@@ -380,14 +380,14 @@ We'll consider the 50 top ranking parameter combinations, so the figure was crop
 \end{table}
 
 Table \ref{table:rank_kappa_breakdown} indicates how frequently each parameter occurred in the top 50 ranked parameter combinations for $\kappa_t$. These results suggest that parameter combinations with the following values to score higher on the $\kappa_t$ metric: [\textit{sliding, *, $100\%$, 75 or 25, partial, 1c or 1e, probability}]. The asterisk is used to indicate any value for that parameter.
-These findings don't exactly match up with the results found in the previous section. For example, we found that probability voting was more likely to be top ranking in the previous section, whereas we found in this section that weighted averaged or averaged weighted probability voting was more frequently in the 50 top ranked parameter combinations. The same can be said for the drift reset type parameter value.
+These findings do not precisely match up with the results found in the previous section. For example, we found that probability voting was more likely to be top ranking in the previous section, whereas we found in this section that weighted averaged or averaged weighted probability voting was more frequently in the 50 top ranked parameter combinations. The same can be said for the drift reset type parameter value.
 
 \subsection{Ranking over execution time}
-Figure \ref{fig:rank_seconds} shows the post-hoc Nemenyi ranking results for the execution time metric. As before, the left hand side lists the best ranking parameter combinations, and the right hand side shows the worst performing ones. 
-We'll consider the 50 top ranking parameter combinations.
+Figure \ref{fig:rank_seconds} shows the post-hoc Nemenyi ranking results for the execution time metric. As before, the left-hand side lists the best ranking parameter combinations, and the right-hand side shows the worst performing ones. 
+We will consider the 50 top ranking parameter combinations.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{./images/rank_seconds_cropped}
+  \includegraphics[width=\linewidth]{./images/chapter5/rank_seconds_cropped}
 \caption{\label{fig:rank_seconds}Ranking all parameter combinations, over execution time}
 \end{figure}
 \begin{table}[]
@@ -424,7 +424,7 @@ We'll consider the 50 top ranking parameter combinations.
 \end{tabular}
 \end{table}
 
-Table \ref{table:rank_seconds_breakdown} indicates how frequently each parameter occurred in the top 50 ranked parameter combinations for the execution time. These results suggest that parameter combinations with the following values to have lower values for the execution time metric: [\textit{hybrid, probability, $60\%$, 100, partial, 1c or 1e, probability}]. These results almost completely match the results from the previous section, confirming our findings.
+Table \ref{table:rank_seconds_breakdown} indicates how frequently each parameter occurred in the top 50 ranked parameter combinations for the execution time. These results suggest that parameter combinations with the following values have lower values for the execution time metric: [\textit{hybrid, probability, $60\%$, 100, partial, 1c or 1e, probability}]. These results almost completely match the results from the previous section, confirming our findings.
 
 \subsection{Ranking over both metrics}
 
@@ -432,10 +432,10 @@ By filtering the raw values from the simulations we ran, in combination with the
 
 Figure \ref{fig:rank_both_all} shows the raw values for each data set for both measured metrics. The values are ordered by an average of the ranks for $\kappa_t$ and execution time. To give more weight to the predictive accuracy in the ordering, the equation for the average is the following: $\frac{3\times rank_{\kappa_t}+rank_{execution\ time}}{4}$.
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{./images/rank_both}
+\begin{sidewaysfigure}
+  \includegraphics[width=\linewidth]{./images/chapter5/rank_both}
 \caption{\label{fig:rank_both_all}Raw $\kappa_t$ and execution time values ordered by averaged ranks}
-\end{figure}
+\end{sidewaysfigure}
 
 In order to find the right balance, we started to filter out the parameter combinations with the conditions found in table \ref{table:rank_both_filter_dataset}, and then filtered out those whose averaged rank was below 340. We should note that the $\kappa_t$ ranks are in the range of $[228.8, 947.3]$ and that of the execution time in the range of $[1, 1108.2]$. Figure \ref{fig:compare_both_best} shows the remaining parameter combinations, with their raw values for both measured metrics. These filters were selected by intuition and through extensive exploration and inspection, in order to remove very high execution times as well as poor $\kappa_t$ values. We also chose to include the parameter combinations that led to the best overall $\kappa_t$ average metric, and the one with the best average execution time metric.
 
@@ -452,24 +452,24 @@ mixed & $\le$ 9.1 seconds \\ \hline
 \end{tabular}
 \end{table}
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{./images/compare_both_best}
+\begin{sidewaysfigure}
+  \includegraphics[width=\linewidth]{./images/chapter5/compare_both_best}
 \caption{\label{fig:compare_both_best}Remaining parameter combinations and their raw metric values after filtering}
-\end{figure}
+\end{sidewaysfigure}
 
-For the best resulting predictive accuracy, [\textit{sliding window, probability voting, $100\%$ ground truth, 100 batch size, partial reset, 1 drift detector, probability drift content}] proved to be the best parameter combination. And for the best execution time,  the following combination of parameters proved to be the best: [\textit{hybrid window, probability, $60\%$ ground truth, 100 batch size, blind reset, 1 drift detector, probability content}]. 
+For the best resulting predictive accuracy, [\textit{sliding window, probability voting, $100\%$ ground truth, 100 batch size, partial reset, one drift detector, probability drift content}] proved to be the best parameter combination. As for the execution time,  the following combination of parameters proved to be the best: [\textit{hybrid window, probability, $60\%$ ground truth, 100 batch size, blind reset, one drift detector, probability content}]. 
 
-However, if we can accept a $1$ to $4\%$ reduction for $\kappa_t$ values, then significant time savings can be achieved by using [\textit{hybrid window, probability voting, $100\%$ ground truth, 75 batch size, reset all, 1 drift detector, probability content}]. Indeed, we can reduce execution time by up to $9.5\%$.
+However, if we can accept a $1$ to $4\%$ reduction for $\kappa_t$ values, then significant time savings can be achieved by using [\textit{hybrid window, probability voting, $100\%$ ground truth, 75 batch size, reset all, one drift detector, probability content}]. Indeed, we can reduce execution time by up to $9.5\%$.
 
 \subsection{Effects of reducing ground truth used for training}
-As stated in section \ref{section:vc_reduce_gt}, we want to determine at what ratio of predictions to ground-truth our voting ensemble's prediction accuracy declines and by how much. Figure \ref{fig:ground_truth_drop} shows examples of parameter combinations using varying amounts of ground truth ($10\%$ increments starting at 60). The values shown in the graphs were selected manually after having been ranked with the averaging equation shown above. The selection process was simple, we selected one or two parameter combinations that had the highest averaged rank value for a given percentage of ground truth. The graph indicates that the predictive accuracy of our ensemble doesn't drop until we use $80\%$ of ground truth. The execution times can be reduced by further reducing the predictive accuracy.
+As stated in section \ref{section:vc_reduce_gt}, we want to determine at what ratio of predictions to ground-truth our voting ensemble's prediction accuracy declines and by how much. Figure \ref{fig:ground_truth_drop} shows examples of parameter combinations using varying amounts of ground truth ($10\%$ increments starting at 60). The values shown in the graphs were selected manually after having been ranked with the averaging equation shown above. The selection process was simple, we selected one or two parameter combinations that had the highest averaged rank value for a given percentage of ground truth. The graph indicates that the predictive accuracy of our ensemble does not drop until we use $80\%$ of ground truth. The execution times can be reduced by further reducing the predictive accuracy.
 
 One finding that we find particularly odd is that as the use of ground truth diminishes, the predictive accuracy increases for the SEA generated data sets with noise. We are led to believe that for increasing levels of noise in a data set, reducing the ground truth used (to an extent) to train a model increases its predictive accuracy. Further research, outside the scope of this thesis, is needed to ascertain the veracity of this finding.
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{./images/chapter5/ground_truth}
+\begin{sidewaysfigure}
+  \includegraphics[width=\linewidth]{./images/chapter5/ground_truth_both}
 \caption{\label{fig:ground_truth_drop}$\kappa_t$ and execution times for parameter combinations using varying amounts of ground truth}
-\end{figure}
+\end{sidewaysfigure}
 
 \section{Comparing to the State of the Art}
 
@@ -479,28 +479,28 @@ As previously mentioned, the algorithms which we will be comparing our voting en
 
 \subsection{Choosing a window size for State of the Art algorithms}
 
-\begin{figure}
+\begin{sidewaysfigure}
   \includegraphics[width=\linewidth]{./images/chapter5/compare_sota}
 \caption{\label{fig:raw_compare_sota}$\kappa_t$ and execution times of State of the Art algorithm with varying window sizes}
-\end{figure}
+\end{sidewaysfigure}
 
-For these algorithms, we made sure to use $100\%$ ground truth for the training, sliding windowing and only modified the window size. However, changing the window size did not change the execution times or $\kappa_t$ by much more than $1\%$ or 1 second as can be seen in figure \ref{fig:raw_compare_sota}. For this reason, we chose to simply keep one example for each algorithm, that ranked better with a given window size than other. We should note that applying the Friedman test and Nemenyi tests showed that the window size resulted in confirming the null hypothesis that all window sizes led to similar results for each classifier for the no change, majority voting, and SGD classifiers. Therefore, we simply took the best overall ranking window size. For Hoeffding Trees, window size of 25 showed a significant statistical difference to 100 but only for the execution time. For Leveraging Bagging, window size of 25 showed a significant statistical difference to 100 but only for the $\kappa_t$ metric.
+For these algorithms, we made sure to use $100\%$ ground truth for the training, sliding windowing and only modified the window size. However, changing the window size did not change the execution times or $\kappa_t$ by much more than $1\%$ or 1 second as can be seen in figure \ref{fig:raw_compare_sota}. For this reason, we chose to keep one example for each algorithm, that ranked better with a given window size than other. We should note that applying the Friedman test and Nemenyi tests showed that the window size resulted in confirming the null hypothesis that all window sizes led to similar results for each classifier for the no change, majority voting, and SGD classifiers. Therefore, we merely took the best overall ranking window size. For Hoeffding Trees, a window size of 25 showed a significant statistical difference to 100 but only for the execution time. For Leveraging Bagging, a window size of 25 showed a significant statistical difference to 100 but only for the $\kappa_t$ metric.
 
 The resulting chosen window sizes are as follows: no change (25),  majority voting (25), SGD (75), Hoeffding Tree (25), Leveraging Bagging (25).
 
-We have opted to compare these algorithms to our voting ensemble with 6 different parameter combinations (1 for each increment of ground truth used, and an additional one using $100\%$ ground truth).
+We have opted to compare these algorithms to our voting ensemble with six different parameter combinations (1 for each increment of ground truth used, and an additional one using $100\%$ ground truth).
 
 
 \subsection{Visual comparison}
 
-Finally, we can compare our voting ensemble to the state of the art. Figure \ref{fig:raw_compare_sota_all} shows the raw results, to better visualize how each algorithm, and its parameter combinations affects the data sets that they are trying to model.
+Finally, we can compare our voting ensemble to the state of the art. Figure \ref{fig:raw_compare_sota_all} shows the raw results, to better visualize how each algorithm, and its parameter combinations affect the data sets that they are trying to model.
 
-\begin{figure}
+\begin{sidewaysfigure}
   \includegraphics[width=\linewidth]{./images/chapter5/compare_sota_all}
 \caption{\label{fig:raw_compare_sota_all}$\kappa_t$ and execution times when comparing our Voting Ensemble to the State of the Art}
-\end{figure}
+\end{sidewaysfigure}
 
-As we can see from these two graphs, Leveraging Bagging (LB) does achieve the best predictive accuracy but the worst execution time. While the difference in predictive accuracy between LB and the other algorithms is noticeable, it isn't glaring. However, when it comes to execution time, we were required to use a logarithmic scale to show its run time while also showing the run times of other algorithms. LB takes more than 2 orders of magnitude longer than the Voting Ensemble, and 1.5 order of magnitude longer than a Hoeffding Tree (HT). Given that LB is comprised of 10 HTs, it makes perfect sense that LB takes so much longer to run.
+As we can see from these two graphs, Leveraging Bagging (LB) does achieve the best predictive accuracy but the worst execution time. While the difference in predictive accuracy between LB and the other algorithms is noticeable, it is not glaring. However, when it comes to execution time, we were required to use a logarithmic scale to show its run time while also showing the run times of other algorithms. LB takes more than two orders of magnitude longer than the Voting Ensemble, and 1.5 orders of magnitude longer than a Hoeffding Tree (HT). Given that LB is comprised of 10 HTs, it makes perfect sense that LB takes so much longer to run.
 
 However, our findings from the graph do not have the weight of a proper statistical analysis, which follows in the next section.
 
@@ -522,9 +522,9 @@ To determine which pairs of algorithms actually differ, we used the post-hoc Nem
 \end{figure}
 
 A Nemenyi graph shows a ranking of algorithms on a scale from 1 to N (typically the number of algorithms compared). A bar labelled critical difference (CD) is shown above the scale, which is the minimum rank length for two algorithms to not show a significant statistical difference in rank. 
-Additionally, there may be horizontal bars that link ranked algorithms. Any algorithms that share a same horizontal bar are not significantly statistically different. Pairs of algorithms that are further apart than the CD bar are significantly statistically different.
+Additionally, there may be horizontal bars that link ranked algorithms. Any algorithms that share the same horizontal bar are not significantly statistically different. Pairs of algorithms that are further apart than the CD bar are significantly statistically different.
 
-We can see from the graph that there is not significant statistical difference between LB, our Voting Ensemble using our best overall parameter combination, an SGD classifier, our Voting Ensemble using our hybrid windowing approach, and our Voting Ensemble using only $80\%$ ground truth when training. This confirms the rejection of the null hypothesis for $\kappa_t$. It's also a very good sign, because all of the above mentioned algorithms were statistically significantly better than a single Hoeffding Tree.
+We can see from the graph that there is no significant statistical difference between LB, our Voting Ensemble using our best overall parameter combination, an SGD classifier, our Voting Ensemble using our hybrid windowing approach, and our Voting Ensemble using only $80\%$ ground truth when training. This confirms the rejection of the null hypothesis for $\kappa_t$. It is also a very good sign, because all of the above-mentioned algorithms were statistically significantly better than a single Hoeffding Tree.
 
 As a side note, we can also say that there is a significant statistical difference between both the majority voting and no change classifiers with all algorithms, aside from our Voting Ensemble training with $70\%$ of ground truth or less.
 
@@ -540,7 +540,7 @@ For the final measure, execution time, we use the Friedman test, with a signific
 \end{figure}
 
 We can see from the graph that Leveraging Bagging ranks last, and Hoeffding Trees ranks second last, which is as expected given the raw values that we saw above. 
-The graph also shows that there is a significant statistical difference between Leveraging Bagging (the State of the Art algorithm we're comparing), and our Voting Ensemble (except when using $70\%$ or $80\%$ ground truth). Given that Leveraging Bagging runs in over 2 orders of magnitude longer than our Voting Ensemble, this result is not surprising in the least. It is, however, comforting to have our visual analysis backed by this statistical test.
+The graph also shows that there is a significant statistical difference between Leveraging Bagging (the State of the Art algorithm we are comparing), and our Voting Ensemble (except when using $70\%$ or $80\%$ ground truth). Given that Leveraging Bagging runs in over two orders of magnitude longer than our Voting Ensemble, this result is not surprising in the least. It is, however, comforting to have our visual analysis backed by this statistical test.
 
 Therefore, this test statistically showed that our Voting Ensemble runs significantly faster than Leveraging Bagging.
 
