@@ -1,0 +1,63 @@
+\chapter{Summaries}
+As recommended by Silyn in \cite[p.~151]{silyn2012writing}, we have created this chapter to collect all of the chapter summaries.
+
+%\section{Chapter \ref{chapter:introduction}: Introduction}
+
+\section{Chapter \ref{chapter:background_work}: Background Work}
+This chapter presents the fundamentals of machine learning and the various challenges of extracting knowledge from data streams. We introduce classification as a type of machine learning, for which the goal is to extract knowledge, computationally, from labelled data. Algorithms are developed to model the relationship between the data and the class labels. Semi-supervised learning is also a classification task but with the added constraint of learning from a data set that is not entirely labelled. In this thesis, the data we learn from come from data streams, which are voluminous, volatile and velocious. As such, constraints on time and memory usage must be respected, and a mechanism is required to forget "old data" safely.
+
+We cover specific classifiers: baseline classifiers are usually relatively simple and used as a baseline for comparing classifier performance. We also cover the algorithms that we employed in our framework, as well as the state of the art: Naive Bayes, Stochastic Gradient Descent, Hoeffding Trees and Leveraging Bagging.
+
+We define concept drifts as an evolution in the probability distribution of classes and/or attributes. We describe the main types of concept drifts that can occur, regardless of how self-explanatory they are named: abrupt, gradual and recurring. We then review drift detection strategies presented in the literature, including FHDDM/S which we extend in this thesis. Our review shows a gap in research as it pertains to semi-supervised drift detection.
+
+Next, we define ensembles as an amalgamation of any number of classifiers. As all classifiers must output a prediction, ensembles must as well; we present existing techniques to map these multiple outputs to a single one. Having defined ensembles, we review those that were proposed in the literature using two criteria: the processing method and whether or not they were designed to deal with evolving concepts. The processing method distinguishes if instances are analyzed online (one-by-one) or in batches. Our review shows a gap in research as it pertains to semi-supervised learning from evolving streams.
+
+We expect the audience of this thesis to be comfortable in the field of computer science and to have briefly read about or been introduced to machine learning.
+
+\section{Chapter \ref{chapter:contributions}: Contributions}
+In this chapter, we introduce our methodology, entitled Learning from Evolving Streams via Self-Training Novel Windowing Ensembles (LESS-TWE).
+
+We propose a weighted soft voting scheme that uses a hyperbolic tangent function. We choose the $\tanh$ function as it allows us to approximate a logistic function while being less computationally expensive.
+
+Next, we propose a novel windowing technique, exclusive to ensembles. Our technique allows every classifier in the ensemble to train from each data point in the stream \textbf{exactly once} similar to tumbling windows, as opposed to sliding windows where a data point is trained on \textbf{at least once}. As such, our method presents a trade-off between accuracy and execution time. Only one classifier per batch is trained on the window, therefor each classifier trains on a specific data instance at different times, resulting in delayed training. This means that only one classifier in the ensemble is trained on the newest data before the ensemble predicts labels for the subsequent batch.
+The motivation for this technique is to determine if we can spend less execution time training the classifiers and to investigate how progressively delaying training of some of the classifiers in the ensemble affects concept drift detection and classification performance.
+
+Our next contribution relates to selective self-training. In this semi-supervised learning algorithm, a classifier assigns a label it predicts to unlabelled data for future learning, if it is highly confident it is correct. There have not yet been any attempts, to the best of our knowledge, to investigate how self-training performs if labelling all unlabelled data, regardless of the classifier's confidence in its predicted label.
+
+Finally, our last contribution is an extension of the Fast Hoeffding Drift Detecting Method for evolving data Streams. In our extension, instead of relying on the prequential accuracy, FHDDMS now makes use of an ensemble's or its classifiers' confidences, or of a boolean indicating if the classifier's and the ensemble's votes were identical for each classifier in the ensemble. Our extension allows FHDDMS to run without any labelled data, therefore making it an unsupervised drift detector.
+
+Finally, we will cover all of our contributions by using a small toy example to explain how data is processed from a stream.
+
+\section{Chapter \ref{chapter:experimental_design}: Experimental Design}
+In this chapter, we describe how we conduct our experiments, on a MacBook Pro model \textit{11,4} running Python 3.7.3.
+
+The data sets used for our analysis in the upcoming chapter comprise of generated SEA data with [0, 10, 20] percent noise as well as CIRCLES, SINE1 and MIXED data sets, which contain 10\% noise. Our data sets contain either abrupt or gradual concept drifts.
+
+The estimation technique we use is prequential evaluation, also known as interleaved test-then-train, which consists of infinitely executing a loop where a classifier first predicts labels for new data (without its label), then adapts its model for said data, with the correct label. The prequential evaluation loop is provided by scikit-multiflow, a Python framework backed by A. Bifet.
+
+The performance measures that we use are the execution time, measured in seconds, as well as the $\kappa$-temporal statistic to evaluate a classifier's predictive performance, also called $\kappa^+$ or $\kappa_t$. This $\kappa$ statistic compares our classifier to a no-change classifier and takes into account temporal dependence in the data.
+
+Using the mean values for the entire stream for both of the metrics mentioned above, we use statistical tests to determine whether or not the differences observed are statistically significant and not due to simple coincidence. When comparing two classifiers across multiple data sets, we use the Wilcoxon test, and when comparing more than two classifiers, we use the Friedman test, coupled with the post-hoc Nemenyi test.
+
+We conduct the following experiments:
+\begin{itemize}
+\item  examine the impact of each parameter value on the mean of each metric,
+\item rank the results of each parameter combination in order to establish any trend regarding parameter values across the metrics,
+\item compare the top ranking parameter combinations to the state of the art.
+\end{itemize}
+
+In the following chapter, we will present the results of our experiments, analyse these findings and discuss their significance.
+
+\section{Chapter \ref{chapter:evaluation_discussion}: Experimental Evaluation and Discussion}
+A preliminary examination of our results shows that our framework's execution time is, at most, very loosely tied to its predictive accuracy.
+
+An investigation on the impact of each parameter value on the mean of each metric leads us to determine how to roughly maximise $\kappa_t$ or minimise the execution time.
+The differences lie with the window type, the batch size, the percentage of labelled data used and, partially, the drift detector count. Our results indicate that using probability voting, one detector per ensemble to detect drifts, and resetting all classifiers when drifts occur would lead to better $\kappa_t$ values and a lower execution time. For the batch size, window type, and the drift detector count, it is entirely logical that choosing one value over another would change the execution time as they were, at least partially, implemented as time-saving measures.
+
+The findings above are confirmed, and parameter values that tend to rank well are identified by ranking the parameter combinations for each metric. By examining the paired rankings (time and predictive performance), we propose an alternative parameter combination that achieves significant time savings over the one with the best predictive performance, while only reducing $\kappa_t$ by one to four percent.
+
+Our framework runs roughly 160 times faster than the state of the art \textit{Leveraging Bagging} algorithm, and it is comparable in terms of the measured $\kappa_t$ metric. Training with only $90\%$ labelled data does not compromise our framework's predictive accuracy in comparison to \textit{Leveraging Bagging}. Our results also indicate that the predictive accuracy of our ensemble does not drop until we reduce labelled data to 80\%.
+
+Practically, this means that our framework should definitely be considered when execution time is an important metric. However, for the applications that strictly require high predictive accuracy, Leveraging Bagging would still be the preferred choice.
+
+%\section{Chapter \ref{chapter:conclusion}: Conclusion}

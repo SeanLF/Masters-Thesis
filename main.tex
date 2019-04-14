@@ -156,21 +156,18 @@ Thesis submitted in partial fulfilment of the requirements for the \\
 \end{center}
 \end{titlepage}
 
-\cleardoublepage
-
 %----------------------------------------------------------------------------------------
 %	ABSTRACT PAGE
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-A major issue with supervised and semi-supervised learning of data streams is late-arriving or missing class labels. Assuming that correctly labelled data will always be available and timely is unreasonable, and, as such, supervised methods are not usually applicable in the real world. Therefore, real-world problems usually require the use of semi-supervised or unsupervised learning techniques. In an intrusion detection problem, it is unreasonable to assume that we will know with utmost certainty whether a network packet is malicious or not before any subsequent packet is processed. Additionally, in semi-supervised learning, "the instances having the highest [predictive] confidence are not necessarily the most useful ones" \cite{homayoun2016review}. We want to determine if self-training can perform well without being selective in an online setting.
+A major issue with supervised and semi-supervised learning of data streams is late-arriving or missing class labels. Assuming that correctly labelled data will always be available and timely is unreasonable, and, as such, supervised methods are not usually applicable in the real world. Therefore, real-world problems usually require the use of semi-supervised or unsupervised learning techniques. In an intrusion detection problem, it is unreasonable to assume that we will know with utmost certainty whether a network packet is malicious or not before any subsequent packet is processed. Additionally, in semi-supervised learning, "the instances having the highest [predictive] confidence are not necessarily the most useful ones" \cite{homayoun2016review}. We investigate how self-training performs without its selective heuristic in a streaming setting.
 
 This leads us to our contributions. We extend an existing concept drift detector to operate without any labelled data, by using a sliding window of our ensemble's prediction confidence, instead of a boolean indicating whether the ensemble predicted correctly. We also extend selective self-training by using all predictions, and not only those with high predictive confidence. Finally, we developed a novel windowing type for ensembles, as sliding windows are very time consuming and regular tumbling windows are not a suitable replacement. Our windowing technique can be considered a hybrid of the two: we train each sub-classifier in the ensemble with tumbling windows, but delay training in such a way that only one sub-classifier can update its model per iteration.
 
 We found, through statistical significance tests, that our framework is (roughly 160 times) faster than current state of the art techniques, and achieves comparable predictive accuracy.
-That being said, more research is needed to further reduce the quantity of labelled data used for training, while also increasing its predictive accuracy.
-\end{abstract}
+That being said, more research is needed to further reduce the quantity of labelled data used for training, while also increasing its predictive accuracy.\end{abstract}
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
@@ -184,7 +181,7 @@ I would like to thank my supervisor, Dr. Herna Viktor, for her guidance, incredi
 
 Finally, I could not have completed this thesis without the support, and encouragement of my friends and family.
 
-Many thanks to each and every one of you.\ldots
+Many thanks to each and every one of you.
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
@@ -211,18 +208,24 @@ Many thanks to each and every one of you.\ldots
 \textbf{AI} & Artificial Intelligence \\
 \textbf{Bagging} & Bootstrap Aggregation \\
 \textbf{CPU} & Central Processing Unit \\
-\textbf{CSV} & Comma Seperated Values\\
+\textbf{CSV} & Comma Separated Values\\
 \textbf{DDM} & Drift Detection Method \\
 \textbf{FHDDMS} & Fast Hoffding Drift Detection Method for evolving data Streams \\
 \textbf{GB} & Gigabyte \\
 \textbf{IoT} & Internet of Things \\
+\textbf{kNN} & k Nearest Neighbours \\
+\textbf{LB} & Leveraging Bagging \\
 \textbf{LED} & Light Emitting Diode \\
+\textbf{LESS-TWE} & Learning from Evolving Stream via Self-Training Windowing Ensembles \\
 \textbf{ML} & Machine Learning \\
 \textbf{MFHDDMS} & Modified Fast Hoffding Drift Detection Method for evolving data Streams \\
 \textbf{MOA} & Massive Online Analysis \\
 \textbf{NB} & Naive Bayes \\
+\textbf{NN} & Neural Network \\
+\textbf{OS} & Operating System \\
 \textbf{RAM} & Random Access Memory \\
 \textbf{RGTDSMF} & Reduced Ground Truth Data Stream Mining Framework \\
+\textbf{SEA} & Streaming Ensemble Algorithm \\
 \textbf{SGD} & Stochastic Gradient Descent \\
 \textbf{SSD} & Solid State Drive \\
 \textbf{SSL} & Semi-Supervised Learning \\
@@ -268,6 +271,9 @@ Many thanks to each and every one of you.\ldots
 %\include{Appendices/AppendixB}
 %\include{Appendices/AppendixC}
 \include{Appendices/Chapter7Appendix}
+\include{Appendices/SummariesAppendix}
+
+
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY

@@ -1,14 +1,31 @@
 
 
 \chapter{Experimental Design\label{chapter:experimental_design}} % Main chapter title
-In this chapter, we will first cover the software and hardware specifications, briefly go over the framework that we extended, describe the various datasets used, explain the experimental setup and the evaluation metrics, and we will cover how we plan to compare the contributions listed in the previous chapter to the state of the art; or in the case of potential improvements, how they perform in regards to the original version of each respective algorithm.
+In this chapter, we describe how we conduct our experiments, on a MacBook Pro model \textit{11,4} running Python 3.7.3.
+
+The data sets used for our analysis in the upcoming chapter comprise of generated SEA data with [0, 10, 20] percent noise as well as CIRCLES, SINE1 and MIXED data sets, which contain 10\% noise. Our data sets contain either abrupt or gradual concept drifts.
+
+The estimation technique we use is prequential evaluation, also known as interleaved test-then-train, which consists of infinitely executing a loop where a classifier first predicts labels for new data (without its label), then adapts its model for said data, with the correct label. The prequential evaluation loop is provided by scikit-multiflow, a Python framework backed by A. Bifet.
+
+The performance measures that we use are the execution time, measured in seconds, as well as the $\kappa$-temporal statistic to evaluate a classifier's predictive performance, also called $\kappa^+$ or $\kappa_t$. This $\kappa$ statistic compares our classifier to a no-change classifier and takes into account temporal dependence in the data.
+
+Using the mean values for the entire stream for both of the metrics mentioned above, we use statistical tests to determine whether or not the differences observed are statistically significant and not due to simple coincidence. When comparing two classifiers across multiple data sets, we use the Wilcoxon test, and when comparing more than two classifiers, we use the Friedman test, coupled with the post-hoc Nemenyi test.
+
+We conduct the following experiments:
+\begin{itemize}
+\item  examine the impact of each parameter value on the mean of each metric,
+\item rank the results of each parameter combination in order to establish any trend regarding parameter values across the metrics,
+\item compare the top ranking parameter combinations to the state of the art.
+\end{itemize}
+
+In the following chapter, we will present the results of our experiments, analyse these findings and discuss their significance.
 
 %----------------------------------------------------------------------------------------
 
 \section{Software and Hardware specifications}
-In order to ensure that our experiments are reproducible, we will specify the specifications of the hardware and software used to run them. All experiments were run on a MacBook Pro model \textit{11,4}. This machine was running macOS 10.14.1 on a quad-core Intel i7 2.2GHz processor (\textbf{3.4GHz} TurboBoost, 8 virtual cores), with a 256 GB SSD, and \textbf{16GB of RAM}. During the course of the experiments, the laptop was plugged in and fully charged.
+In order to ensure that our experiments are reproducible, we specify the specifications of the hardware and software used to run them. All experiments were run on a MacBook Pro model \textit{11,4}. This machine was running macOS 10.14.4 on a quad-core Intel i7 2.2GHz processor (\textbf{3.4GHz} TurboBoost, 8 virtual cores), with a 256 GB SSD, and \textbf{16GB of RAM}. During the course of the experiments, the laptop was plugged in and fully charged.
 
-Python 3.7.1 was installed, with the following software packages:
+Python 3.7.3 was installed, with the following software packages:
 \begin{itemize}
 \item \textit{sortedcontainers} v2.0.5
 \item \textit{numpy} v1.15.3
@@ -22,13 +39,13 @@ Python 3.7.1 was installed, with the following software packages:
 \section{Scikit-multiflow}
 Scikit-multiflow \cite{skmultiflow} is a Python framework, that complements scikit-learn, an offline, batch learning Python library. As it currently stands, scikit-multiflow implements stream generators, machine learning algorithms, drift detection algorithms and evaluation methods for data streams. The authors describe scikit-multiflow as "an open-source framework for multi-output / multi-label and stream data mining", and takes its inspiration from MOA and MEKA. The former is the most popular data stream mining framework, implemented in Java, which includes a collection of machine learning algorithms, and evaluation tools. The latter is another project implemented in Java, but for multi-label learning and evaluation.
 
-We selected this framework as it is backed by A. Bifet, implemented in Python: the most popular language among data scientists, open-source, and very recent.
+We selected this framework as it is backed by A. Bifet, implemented in Python: a popular language among data scientists, open-source, and very recent.
 
 \section{Data sets}
-All of the synthetic data sets used ($CIRCLES$, $SINE1$, and $MIXED$) were generated by my colleague for his paper \cite{pesaranghader2016fast} where he proposed FHDDMS, the drift detection algorithm. These datasets were generated with ten percent (10\%) noise to test the robustness of his drift detection algorithm against noisy data streams. The data sets contain one hundred thousand rows belonging to one of two classes. These synthetic data sets can be traced back to \cite{10.1007/3-540-59286-5_74} and were further used in the following papers \cite{nishida2007detecting, gama2004learning, baena2006early}. % Given that these data sets are synthetic with drifts beginning at a known location, we can also determine the drift detection delay as well as true and false positive rates.
+All but one of the synthetic data sets used ($CIRCLES$, $SINE1$, and $MIXED$) were generated by my colleague for his paper \cite{pesaranghader2016fast} where he proposed FHDDMS, the drift detection algorithm. These data sets were generated with ten percent (10\%) noise to test the robustness of his drift detection algorithm against noisy data streams. The data sets contain one hundred thousand rows belonging to one of two classes. These synthetic data sets can be traced back to \cite{10.1007/3-540-59286-5_74} and were further used in the following papers \cite{nishida2007detecting, gama2004learning, baena2006early}. % Given that these data sets are synthetic with drifts beginning at a known location, we can also determine the drift detection delay as well as true and false positive rates.
 
 \subsection{$CIRCLES$}
-As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set is composed of two relevant numerical attributes: $x$ and $y$, which are uniformly distributed in [0, 1]. There are four different concepts in this data set, each representing whether or not a point is within a circle given $x$, and $y>$ coordinates for its center and its radius $r_c$. This data set contains gradual concept drifts that occur at every twenty-five thousand (25 000) instances. The four pairs of $<(x,y), r_c>$ defining each concept are given in table \ref{table:circle_concepts}.
+As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set is composed of two relevant numerical attributes: $x$ and $y$, which are uniformly distributed in [0, 1]. There are four different concepts in this data set, each representing whether or not a point is within a circle given $x$, and $y>$ coordinates for its centre and its radius $r_c$. This data set contains gradual concept drifts that occur at every twenty-five thousand (25 000) instances. The four pairs of $<(x,y), r_c>$ defining each concept are given in table \ref{table:circle_concepts}.
 
 \begin{table}[]
 \centering
@@ -47,33 +64,32 @@ As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set contain
 As stated by Gama, Joao et al. in \cite{gama2004learning}, this data set contains abrupt concept drifts and uses four relevant attributes. Two of which are boolean, let them be $v$ and $w$; and the other two attributes are numerical, in [0, 1]. Instances belong to the positive class if two of three conditions are met: $v$ is true, $w$ is true, $y < 0.5 + 0.3 \times sin(3\pi x)$. For each concept drift, the conditions are reversed, meaning that if the conditions are met, it will be a positive instance, then after the drift, it will be a negative instance. The abrupt concept drifts occur at every twenty thousand (20 000) instances.
 
 \subsection{Streaming Ensemble Algorithm generator}
-First described in \cite{street2001streaming} by Street and Kim, the Streaming Ensemble Algorithm (SEA) is used to generate streams with abrupt concept drift. It is composed of three numerical attributes of values in [0, 10], and only the first two attributes are relevant. For each instance, the class is determined by checking if the sum of the two relevant attributes passes a threshold value. Let $f_1$ and $f_2$ be the two numerical relevant attributes, and $\theta$ the threshold. An instance belongs to class one if $f_1 + f_2 <= \theta$. As in Street's paper, our stream has four concepts, with the threshold values for each being 8, 9, 7 and 9.5. We generated a stream of one hundred thousand instances, from zero to twenty percent noise, in five percent increments ($\{0; 5; 10; 15; 20\%\}$). Drifts, therefore, occur at every twenty-five thousand instances.
+First described in \cite{street2001streaming} by Street and Kim, the Streaming Ensemble Algorithm (SEA) generates streams with abrupt concept drift. It is composed of three numerical attributes of values in [0, 10], and only the first two attributes are relevant. For each instance, the class is determined by checking if the sum of the two relevant attributes passes a threshold value. Let $f_1$ and $f_2$ be the two numerical relevant attributes, and $\theta$ the threshold. An instance belongs to class \textit{one} if $f_1 + f_2 \leq \theta$. As in Street's paper, our stream has four concepts, with the threshold values for each being 8, 9, 7 and 9.5. We generate streams of one hundred thousand instances, from zero to twenty percent noise, in ten percent increments ($\{0; 10; 20\%\}$). Drifts, therefore, occur at every twenty-five thousand instances.
 
 \section{Estimation techniques}
-In an offline setting, with static data, the most common evaluation method used is called cross-validation. However, given how little time a model has to learn from each instance due to the velocity of data streams and the risk of concept drift. It is for that reason that cross-validation is not suited for an online setting, but the two following techniques are.
+In an offline setting, with static data, the most common evaluation method used is called cross-validation. However, given how little time a model has to learn from each instance due to the velocity of data streams and the risk of concept drift, cross-validation is not suited for an online setting. The two following techniques are, though.
 
 \subsection{Holdout}
-As the name implies, two distinct data sets are required for this technique: a training data set to train a model, and another to test it.  Cross-validation is typically used in offline static data mining, but is too computationally heavy and/or can be too time-consuming in a streaming setting, and therefore the validation step is skipped, and performance is measured against a single holdout set.\cite{bifet2009data}
+Two distinct data sets are required for this technique: a training data set to train a model, and another to test it.  Cross-validation is typically used in offline static data mining, but is too computationally heavy and/or can be too time-consuming in a streaming setting, and therefore the validation step is skipped, and performance is measured against a single holdout set.\cite{bifet2009data}
  
 This technique is most useful when the training and testing sets have already been defined, as it makes comparing results from different studies possible.
 In order to track performance, the model is evaluated periodically, but not too frequently to avoid negatively impacting performance.
 
-The holdout data set can be sourced from new tuples arriving from the data stream, and can also be added later to the training set in order to optimize instance use.
+The holdout data set can be sourced from new tuples arriving from the data stream, and can also be added later to the training set in order to optimise instance use.
 
 It should be sufficient to safely use a single static holdout set if we make the assumption that there is no concept drift. Past studies consider test sets of over tens of thousands of instances to also be sufficient. 
 
 \subsection{Interleaved test-then-train, or prequential}
-Another evaluation method is the so-called prequential evaluation, also known as the interleaved test-then-train method. Again, as the name suggests, the evaluation method consists of first testing the classifier on a given set of instances, then immediately training the classifier on that same set. The evaluation strategy, therefore, ensures that the model has not previously seen testing tuples, and no holdout testing set is necessary, and the accuracy of the model is therefore incrementally updated. This method also allows us to use all of the data for both testing and training. Furthermore, as there is more testing data, each instance used to assess the accuracy and performance of the model weighs less than it would have in a smaller holdout test set.
+Another evaluation method is prequential evaluation, also known as the interleaved test-then-train method. The evaluation method consists of first testing the classifier on a given set of instances, then training the classifier on that same set. The evaluation strategy, therefore, ensures that the model has not previously seen testing tuples, and no holdout testing set is necessary, and the accuracy of the model is therefore incrementally updated. This method also allows us to use all of the data for both testing and training. As more data is tested than in the holdout method, each instance used to assess the accuracy and performance of the model weighs less than it would have in a smaller holdout test set.
 
-For this thesis, all experiments will be done using the interleaved test-then-train evaluation technique.
+All experiments are done using the interleaved test-then-train evaluation technique.
 
 \section{Performance measures\label{section:performance_measures}}
-
 
 \subsection{Accuracy \& Confusion Matrix}
 Let us assume that we are dealing with a binary classification problem (with two classes) with a \textbf{P}ositive and \textbf{N}egative class.
 
-A confusion matrix keeps track of the veracity of our classifying model by using the following four measurements.
+A confusion matrix keeps track of the correctness of our classifying model by using the following four measurements.
 
 \begin{itemize}
 \item False Positive (FP): number of instances incorrectly classified as positive
@@ -84,7 +100,7 @@ A confusion matrix keeps track of the veracity of our classifying model by using
 
 It should then be clear that all of the positive class instances (P) are in the combined groups of FN and TP, and that all of the negative class instances (N) are in the remaining FP and TN groups.
 
-A confusion matrix helps us visualize these measurements by presenting them in a matrix (two-by-two grid in the case of a binary classification problem). Each column represents all of the instances for an actual class, whereas each row represents the instances predicted for a given class. Table \ref{table:confusion_matrix} shows a confusion matrix.
+A confusion matrix helps us to visualise these measurements by presenting them in a matrix (two-by-two grid in the case of a binary classification problem). Each column represents all of the instances for an actual class, whereas each row represents the instances predicted for a given class. Table \ref{table:confusion_matrix} shows a confusion matrix.
 
 \begin{table}[]
 \centering
@@ -111,17 +127,17 @@ Bifet and Frank argue in \cite{bifet2010sentiment} that prequential accuracy is 
 \begin{equation}
 \kappa=\frac{p_0-p_c}{1-p_c}
 \label{eq:kappa}
-\end{equation}where $p_0$ is the classifier's prequential accuracy and $p_c$ is the probability of a chance (or no-change) classifier makes a correct prediction. Refer to \cite{bifet2010sentiment} for the equations used to calculate $p_0$ and $p_c$.
+\end{equation}where $p_0$ is the classifier's prequential accuracy and $p_c$ is the probability that a chance (or no-change) classifier makes a correct prediction. Refer to \cite{bifet2010sentiment} for the equations used to calculate $p_0$ and $p_c$.
 
 Values of $\kappa$ are in [0, 1]. If the classifier always classifies instances correctly, then $p_0=1$ and $\kappa=1$; if the classifier correctly classifies instances as often as the chance classifier, then $p_0 = p_c$ and $\kappa=0$; and if the chance classifier is always right, then $p_c=1$ and $\kappa=1$.
 
 \subsubsection{$\kappa^+$ statistic}
-The $\kappa^+$ statistic is an improvement upon the regular $\kappa$ statistic that takes into account temporal dependence in order better evaluation the performance of a given classifier. When there is no temporal dependency in the data and that classes are balanced, then $\kappa^+$ is equal to $\kappa$. While we could solely rely on $\kappa^+$, the authors however recommend using both $\kappa$ and $\kappa^+$ statistics in order to obtain a more thorough evaluation.
+The $\kappa^+$ statistic is an improvement upon the regular $\kappa$ statistic that takes into account temporal dependence in order to better evaluate the performance of a given classifier. When there is no temporal dependence in the data and that classes are balanced, then $\kappa^+$ is equal to $\kappa$. While we could solely rely on $\kappa^+$, the authors however recommend using both $\kappa$ and $\kappa^+$ statistics in order to obtain a more thorough evaluation.
 $\kappa^+$ is defined in equation \ref{eq:kappa_plus}
 \begin{equation}
 \label{eq:kappa_plus}
 \kappa^+=\frac{p_0-p'_e}{1-p'_e}
-\end{equation}where $p_0$ is the classifier's prequential accuracy and $p'_e$ is the accuracy of a no-change classifier. The no-change classifier predicts that the next class will be the same as the last seen class label. Just like the original $\kappa$ statistic, $\kappa^+\in [0, 1]$. Refer to \cite{DBLP:conf/pkdd/2013-1} for the equations relating to calculating $p_0$ and $p'_e$. $\kappa^+$ is also sometimes referred to as $\kappa$-temporal ($\kappa_t$) \cite{vzliobaite2015evaluation}.
+\end{equation}where $p_0$ is the classifier's prequential accuracy and $p'_e$ is the accuracy of a no-change classifier. The no-change classifier predicts that the next class label will be the same as the last seen class label \cite{bifet2015efficient}. Just like the original $\kappa$ statistic, $\kappa^+\in [0, 1]$. Refer to \cite{DBLP:conf/pkdd/2013-1} for the equations relating to calculating $p_0$ and $p'_e$. $\kappa^+$ is also sometimes referred to as $\kappa$-temporal ($\kappa_t$) \cite{vzliobaite2015evaluation}.
 
 \subsubsection{$\kappa_m$ statistic}
 The $\kappa_m$ statistic is another improvement upon the regular to indicate whether a classifier is performing better than a majority-class classifier \cite{bifet2015efficient}. Its definition is given in equation \ref{eq:kappa_m}.
@@ -138,9 +154,6 @@ Popular choices for statistical tests in the machine learning community for comp
 
 The ANOVA test assumes a normal data distribution whereas the Friedman test does not. It is for this reason, coupled with the fact that the Friedman test is also non-parametric, that we have chosen the latter as our choice for a statistical significance test. However, the Friedman test is not applicable when only comparing two algorithms on multiple domains; for that reason, we will be using the Wilcoxon test in those scenarios.
 
-\subsubsection{Wilcoxon's Signed-Rank test}
-This test is a non-parametric version of the matched-paired \textit{t}-test. It is used to test if two paired samples come from the same distribution.
-
 \subsubsection{The Friedman test}
 The test ranks each algorithm separately for each data set and computes a test statistic using the variation within the ranks and the variation within the error variation. The Friedman statistic $\chi^2_F$ is defined in equation \ref{eq:friedman_statistic}, taken from \cite{japkowicz2011evaluating};
 
@@ -149,12 +162,37 @@ The test ranks each algorithm separately for each data set and computes a test s
 \chi^2_F = \frac{SS_{Total}}{SS_{Error}}=\bigg[\frac{12}{n\times k\times(k+1)}\times\sum_{j=1}^k(R_.j)^2\bigg]-3\times n \times (k+1)
 \end{equation}where $n$ is the number of data sets, $k$ is the number of algorithms considered, and $R$ simply denotes ranking. And finally $(k-1)$ is known as the degrees of freedom.
 
-The Friedman statistic ($\chi^2_F$) is then looked up in the $\chi^2$ distribution table to obtain a \textit{probability value} (p-value), signifying $P(\chi^2_{k-1} \geq \chi^2_F )$. This p-value is widely used in null-hypothesis testing by measuring it against a threshold value called a significance level. A lower p-value means a higher statistical significance. Traditionally, the significance level is either 1\% or 5\%, and denoted as $\alpha$. The null hypothesis is accepted if the p-value is greater than $\alpha$; otherwise, $H_1$ is accepted, and the null hypothesis is rejected.
+The Friedman statistic ($\chi^2_F$) is then looked up in the $\chi^2$ distribution table to obtain a \textit{probability value} (p-value), signifying $P(\chi^2_{k-1} \geq \chi^2_F )$. This p-value is widely used in null-hypothesis testing by measuring it against a threshold value called a significance level. A lower p-value means a higher statistical significance. Traditionally, the significance level is either 0.1 or 0.5, and denoted as $\alpha$. The null hypothesis is accepted if the p-value is greater than $\alpha$; otherwise, $H_1$ is accepted, and the null hypothesis is rejected.
 
 When the null hypothesis is rejected following a Friedman test, post hoc Nemenyi tests are recommended by Japkowicz and Shah in \cite{japkowicz2011evaluating}.
 
+\subsubsection{Wilcoxon's Signed-Rank test}
+This test is a non-parametric version of the matched-paired \textit{t}-test. It is used to test if two paired samples come from the same distribution, by measuring the difference in their mean ranks.
+
+The test procedure is as follows:
+
+$N$ will be set as the sample size, meaning that there are $2N$ data points, and since data are paired, $[x_{1, i}, x_{2, i}]$ represent the measurements for pairs where $i\in [1 ; N]$.
+
+We test the following null hypothesis.
+
+$H_0 $: difference between the pairs follows a symmetric distribution around zero
+\newline$H_1$: does not follow a symmetric distribution around zero
+
+\begin{itemize}
+\item Calculate $d_i = (x_{1, i} - x_{2, i}) \forall i\in[1;N]$.
+\item Pairs for which the difference is zero are excluded, let $N_r$ be the reduced sample size.
+\item Rank the $N_r$ pairs by their absolute difference in increasing order, let $R_i$ denote rank. In the case of ties, assign the pairs with the average of their ranks.
+\item Two sum of ranks are then calculated: 
+\newline$W_{s 1}=\sum_{i=1}^{N_r} I(d_{i}>0) \operatorname{rank}(d_{i}),$ 
+\newline$W_{s 2}=\sum_{i=1}^{N_r} I(d_{i}<0) \operatorname{rank}(d_{i})$.
+\item Calculate statistic $T_{wilcox}=\min(W_{s 1}, W_{s 2})$.
+\item For smaller values of $N$, which is the case in our thesis, look up tabulated critical values of $T$ (according to N and statistical significance level) and reject the null hypothesis if the statistic is inferior to the tabulated value.
+\end{itemize}
+
+
+
 \subsubsection{Post-hoc test: the Nemenyi test}
-Nemenyi tests are used in order to determine if the rankings obtained from the Friedman test are statistically significant. It computes a statistic, $q$, as defined in equation \ref{eq:nemenyi_q} for a pair of classifiers $f_{j1}$ and $f_{j2}$. $q$ gives us the difference between ranks of the two algorithms, and can be also expressed as a "critical distance". In order compare the rankings, the Nemenyi test computes the mean rank for a given classifier using equation \ref{eq:nemenyi_mean_rank} where $R_{ij}$ is the rank of classifier $f_j$ on data set $S_i$.
+The Nemenyi test is used in order to determine which algorithms compared in the Friedman test actually differ. It computes a statistic, $q$, as defined in equation \ref{eq:nemenyi_q} for a pair of classifiers $f_{j1}$ and $f_{j2}$. $q$ gives us the difference between ranks of the two algorithms, and can be also expressed as a critical distance. In order compare the rankings, the Nemenyi test computes the mean rank for a given classifier using equation \ref{eq:nemenyi_mean_rank} where $R_{ij}$ is the rank of classifier $f_j$ on data set $S_i$.
 \begin{equation}
 \label{eq:nemenyi_q}
 \overline{R}_{.j}=\frac{1}{n}\sum_{i=1}^nR_{ij}
@@ -167,12 +205,12 @@ q=\frac{\overline{R}_{.j1}-\overline{R}_{.j2}}{\sqrt{\frac{k(k+1)}{6n}}}
 For these experiments, the following classifiers were used: Gaussian Naive Bayes (G\_NB), Leveraging Bagging, Stochastic Gradient Descent (SGD), Multinomial Naive Bayes (M\_NB), and our Voting Ensemble composed of three sub-classifiers. The three classifiers inside the voting ensemble are the SGD, M\_NB, and G\_NB. Finally, we also used a no-change classifier as well as a majority-class classifier as our baselines.
 
 Readers familiar with classification algorithms might know that some advantages of NB are its scalability, high accuracy, ability to use prior knowledge, and the fact that it has comparable performance to decision trees and neural networks. NB is incrementally more confident, and easy to implement. However, the downsides are its significant compute costs, and that using conditional dependencies reduces accuracy due to the real dependency between attributes.
-SGDs have generally high predictive accuracy, generalize well meaning that they are robust and suitable for noisy domains, and good for incremental learning. However, they are known to have a slow training time, may fail to converge, and output a black box model which means that results cannot be interpreted.
-Leveraging bagging \cite{bifet2010leveraging} is an improvement over the Online Bagging technique of Oza and Russel. They claim to introduce more randomization to the online bagging algorithm to achieve a more accurate classifier. However, the authors noted that subagging, half subagging, and bagging with-out replacement ran faster but were marginally less accurate.
+SGDs have generally high predictive accuracy, generalise well meaning that they are robust and suitable for noisy domains, and good for incremental learning. However, they are known to have a slow training time, may fail to converge, and output a black box model which means that results cannot be interpreted.
+Leveraging bagging \cite{bifet2010leveraging} is an improvement over the Online Bagging technique of Oza and Russel. They introduce more randomisation to the online bagging algorithm to achieve a more accurate classifier. However, the authors noted that subagging, half subagging, and bagging with-out replacement ran faster but were marginally less accurate.
 
 Unless stated otherwise, our default parameters for the experiments are listed in table \ref{table:default_exp_parameters} and the default parameters for the classifiers are listed in table \ref{table:default_clf_parameters}. These values were obtained through extensive experimentation.
 
-Finally, each experiment is run on five different examples each sourced from three synthetic data sets (5 examples of $SINE1$, another 5 of $CIRCLES$, etc.) and three streams generated by the SEA generator with levels of noise in increments of 10\% (from 0\% to 20\%), for a grand total of eighteen (18) streams of one hundred thousand (100000) instances.
+Finally, each experiment is run on five different examples each sourced from three synthetic data sets (5 examples of $SINE1$, another 5 of $CIRCLES$, etc.) and three streams generated by the SEA generator with levels of noise in increments of ten percent (from 0\% to 20\%), for a grand total of eighteen (18) streams of one hundred thousand (100000) instances.
 
 \begin{table}[]
 \centering
@@ -197,7 +235,8 @@ Drift reset type & none \\ \hline
 \begin{tabular}{|l|l|}
 \hline
 \multicolumn{1}{|c|}{\textbf{Classifier}} & \multicolumn{1}{c|}{\textbf{Parameters}} \\ \hline \hhline{==}
-Leveraging Bagging & \begin{tabular}[c]{@{}l@{}}base\_estimator=KNN()\\ n\_estimators=2\\ w=6\\ delta=0.002\\ leverage\_algorithm=leveraging\_bag\\ random\_state=None\end{tabular} \\ \hline
+Leveraging Bagging & \begin{tabular}[c]{@{}l@{}}base\_estimator=HoeffdingTree()\\ n\_estimators=10\\ w=6\\ delta=0.002\\ leverage\_algorithm=leveraging\_bag\\ random\_state=None\end{tabular} \\ \hline
+Hoeffding Tree & \begin{tabular}[c]{@{}l@{}}max\_byte\_size=33.5MB\\split\_criterion=information gain\\split\_confidence=0.0000001\\binary\_split=False\\remove\_poor\_atts=False\\no\_preprune=False\\leaf\_prediction=Naive Bayes Adaptive\end{tabular} \\ \hline
 Gaussian NB & \begin{tabular}[c]{@{}l@{}}priors=None\\ var\_smoothing=1e-9\end{tabular} \\ \hline
 Multinomial NB & \begin{tabular}[c]{@{}l@{}}alpha=1.0\\ fit\_prior=True\\ class\_prior=None\end{tabular} \\ \hline
 Stochastic Gradient Descent & \begin{tabular}[c]{@{}l@{}}loss=log\\ penalty=l2\\ alpha=0.0001\\ l1\_ratio=0.15\\ fit\_intercept=True\\ max\_iter=1000\\ tol=1e-3\\ shuffle=True\\ epsilon=0.1\\ n\_jobs=-1\\ random\_state=None\\ learning\_rate=optimal\\ eta0=0.0\\ power\_t=0.5\\ early\_stopping=False\\ validation\_fraction=0.1\\ n\_iter\_no\_change=5\\ average=False\\ n\_iter=None\end{tabular} \\ \hline
@@ -231,9 +270,9 @@ Otherwise, for parameters that can take more than two values, we will use the Fr
 
 We will be comparing the values of each parameter across all permitted parameter combinations. We will then be able to see if a parameter value is often ranked better and if it seems to influence the measures even when changing the "other" set parameters. In other words, we want to see if a parameter is likely to frequently affect our measured metrics no matter of the other parameters.
 
-After we determine the impact of the parameter values on the measured metrics, we will use the post-hoc Nemenyi test to compare each parameter combination to determine the top ranking combination for each measured metric and over both metrics.
+After we determine the impact of the parameter values on the measured metrics, we will use the ranking algorithm from the post-hoc Nemenyi test to rank each parameter combination to determine the top ranking combination for each measured metric and over both metrics.
 
-Once we obtain the parameter combinations that lead to the best results, we will compare them to the state of the art algorithm (leveraging bagging). We will, also, be comparing these results with no-change and majority-class classifiers (trained with 100\% labelled examples and sliding windows). The leveraging bagging classifier is implemented with a built-in ADWIN drift detector. As we will be comparing at least 3 algorithms, we will employ the Friedman test in conjunction with the post-hoc Nemenyi test where appropriate to assess the statistically significant differences in the results.
+Once we obtain the parameter combinations that lead to the best results, we will compare them to the state of the art algorithm (leveraging bagging). We will, also, be comparing these results with no-change and majority-class classifiers (trained with 100\% labelled examples and sliding windows). The leveraging bagging classifier is implemented with a built-in ADWIN drift detector. As we will be comparing at least 3 algorithms, we will employ the Friedman test in conjunction with the post-hoc Nemenyi test where appropriate to determine which pairs of algorithms differ.
 
 To sum it up quickly:
 \begin{enumerate}
@@ -241,10 +280,3 @@ To sum it up quickly:
 \item rank the results of each parameter combination
 \item use those rankings to compare the top parameter combinations to the state of the art
 \end{enumerate}
-
-\section{Summary}
-In this chapter, we described the experimental setup, the data sets used for our analysis in the upcoming chapter, and the estimation techniques. Using the interleaved test-then-train evaluation technique, coupled with the performance measures listed in section \ref{section:performance_measures}. The Friedman test will be used to determine if our findings are statistically significant, and confirmed by using post hoc Nemenyi tests.
-
-In the following chapter, we will present the results of our experiments comparing our contributions to the baseline and state-of-the-art algorithms, giving our analysis of these findings and of their significance.
-
-% through extensive experimentation or inspection [wording!!!]
