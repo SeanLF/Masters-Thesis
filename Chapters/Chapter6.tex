@@ -4,7 +4,7 @@
 
 %----------------------------------------------------------------------------------------
 
-This thesis focused on improving semi-supervised learning from evolving streams without the use of clustering techniques. The goal of this study was to propose or extend existing algorithms to work with fewer labelled examples, or none at all. Experiments were conducted in order to compare the performance of our framework against that of the state of the art in terms of predictive accuracy and execution time, while considering the percentage of labelled instances used at each stage of learning. This chapter discusses our contributions and presents opportunities for future work.
+This thesis focused on improving semi-supervised learning from evolving streams without the use of clustering techniques. The goal of this study was to \textbf{design} algorithms to work with fewer labelled examples. Experiments were conducted in order to compare the performance of our framework against that of the state of the art in terms of predictive accuracy and execution time, while considering the percentage of labelled instances used at each stage of learning. This chapter discusses our contributions and presents opportunities for future work.
 
 %----------------------------------------------------------------------------------------
  
@@ -16,7 +16,7 @@ We first proposed a voting ensemble that uses a modified soft voting approach, b
 %----------------------------------------------------------------------------------------
 
 \section{Future Work}
-Our framework took very little execution time, far below that of current state of the art techniques, and achieved comparable predictive accuracy, while also using 20\% fewer labelled instances for training, and 100\% less for detecting drifts. We believe that higher predictive accuracy can be achieved, and by using even less labelled data, without significantly impacting the execution time.
+Our framework took very little execution time, far below that of a current state of the art technique, and achieved comparable predictive accuracy \textbf{to that of state of the art techniques that trained on fully-labelled data sets, while ours only trained on 80\% of those labels, and ignoring them completely for detecting drifts}. We believe that a higher predictive accuracy can be achieved without significantly impacting the execution time, \textbf{even when training with less labelled data}.
 
 In order to reduce the quantity of labelled data used for (pre-)training, we can introduce specialised domain knowledge into the learning cycle. An interactive active learning approach can be used, as seen in \cite{floyd2017activetext}, where an intuitive online interface is used to request labels, from an oracle, for any number of uncertain data instances to train on instances that are representative of the stream, or those that classifiers find difficult.
 
