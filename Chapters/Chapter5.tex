@@ -291,7 +291,7 @@ The best choice here appears to be \textit{probability voting}, but we will be a
 
 \begin{figure}
   \includegraphics[width=\linewidth]{./images/chapter5/voting_type_rankings_pie}
-\caption{\label{fig:voting_type_rankings_pie}Pie chart \textbf{illustrating} table \ref{table:voting_type_rankings}}
+\caption{\label{fig:voting_type_rankings_pie}Pie chart illustrating table \ref{table:voting_type_rankings}}
 \end{figure}
 
 \begin{sidewaysfigure}
@@ -509,7 +509,7 @@ However, if we can accept a $1$ to $4\%$ reduction for $\kappa_t$ values, then s
 \caption{\label{fig:ground_truth_drop}$\kappa_t$ and execution times for parameter combinations using varying amounts of ground truth}
 \end{sidewaysfigure}
 
-As stated in section \ref{section:vc_reduce_gt}, we aim to determine the percentage of labelled data used \textbf{at} which our voting ensemble's $\kappa_t$ metric declines and by how much. Figure \ref{fig:ground_truth_drop} shows the predictive performance and execution times for parameter combinations with varying amounts of ground truth (ten percent increments starting at 60\%). The combinations were selected by inspection after having been ranked with the averaging equation (\ref{eq:rank_both}) shown above. Table \ref{table:ground_truth_Acc_kappa} lists the global predictive accuracy and the $\kappa_t$ values for each data set for some of the parameter values used in figure \ref{fig:ground_truth_drop}. This table indicates that the global predictive accuracy of our ensemble is not significantly reduced by training with less ground truth. However, the predictive performance of the ensemble, as measured by $\kappa_t$, differs between 20\% and 54\% when examining $\kappa_t$ when using 60\% and 100\% of ground truth. The $\kappa_t$ results indicate that as the ensemble trains with less labelled data, it performs more similarly to a baseline no-change classifier (refer to section \ref{section:kappa_t}).
+As stated in section \ref{section:vc_reduce_gt}, we aim to determine the percentage of labelled data used at which our voting ensemble's $\kappa_t$ metric declines and by how much. Figure \ref{fig:ground_truth_drop} shows the predictive performance and execution times for parameter combinations with varying amounts of ground truth (ten percent increments starting at 60\%). The combinations were selected by inspection after having been ranked with the averaging equation (\ref{eq:rank_both}) shown above. Table \ref{table:ground_truth_Acc_kappa} lists the global predictive accuracy and the $\kappa_t$ values for each data set for some of the parameter values used in figure \ref{fig:ground_truth_drop}. This table indicates that the global predictive accuracy of our ensemble is not significantly reduced by training with less ground truth. However, the predictive performance of the ensemble, as measured by $\kappa_t$, differs between 20\% and 54\% when examining $\kappa_t$ when using 60\% and 100\% of ground truth. The $\kappa_t$ results indicate that as the ensemble trains with less labelled data, it performs more similarly to a baseline no-change classifier (refer to section \ref{section:kappa_t}).
 
 \begin{table}[]
   \centering
