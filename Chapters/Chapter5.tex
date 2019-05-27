@@ -112,7 +112,7 @@ As other parameters can take more than two values, we must use the Friedman test
 
 \begin{table}[]
 \centering
-\caption{\label{table:nemenyi_significant_breakdown_aggregate}Number of different ranking and statistically significant parameter combinations from table \ref{table:nemenyi_significant_breakdown}}
+\caption{\label{table:nemenyi_significant_breakdown_aggregate}Breakdown of unique statistically significant different rankings of parameter combinations from table \ref{table:nemenyi_significant_breakdown}}
 \begin{tabular}{|l|l|c|c|}
 \hline
 \textbf{Parameter} & \textbf{Measure} & \textbf{Significant} & \textbf{Insignificant} \\ \hline \hhline{====}
@@ -130,7 +130,7 @@ As other parameters can take more than two values, we must use the Friedman test
 \subsubsection{Batch Size}
 
 As we can observe from table \ref{table:nemenyi_significant_breakdown}, only one combination of parameters among 330 were significantly statistically different when considering the $\kappa_t$ metric for the batch size parameter, which is a negligible amount. As for the execution time metric, almost $87\%$ of parameter combinations proved to show a significant statistical difference. This confirms our expectations that changing only the batch size has a significant impact on the execution time of the algorithm but no significant impact on its predictive accuracy.
-The first row of table \ref{table:nemenyi_significant_breakdown_aggregate} indicates that there are seven variations of rankings of batch size rankings for the $\kappa_t$ metric; the second line indicates that there are two variations of rankings and pairs of parameters that were significantly statistically different and two variations of ranks for batch sizes that were insignificant. These values are illustrated in table \ref{table:batch_size_rankings} and figure \ref{fig:batch_size_rankings_pie}.
+The first row of table \ref{table:nemenyi_significant_breakdown_aggregate} indicates that there are seven (one plus six) unique batch size rankings for the $\kappa_t$ metric; the second line indicates that there are four unique rankings for execution time: two unique rankings of parameters that were significantly statistically different and two unique rankings for batch sizes that were insignificant. These values are illustrated in table \ref{table:batch_size_rankings} and figure \ref{fig:batch_size_rankings_pie}.
 
 \begin{table}[]
 \centering
