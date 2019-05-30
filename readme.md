@@ -12,6 +12,7 @@
 ## Writing tools
 - [Overleaf](https://www.overleaf.com/) is an online LaTeX rich text editor, similar to Google Docs.
 - [Grammarly](https://www.grammarly.com) was used to fix any writing issues such as grammar checking, spelling mistakes and to check for any cases of plagiarism.
+- [Turn It In](https://www.turnitin.com) is an academic tool (mainly used for teaching) to prevent academic fraud. Our supervisor granted us access to further confirm that this thesis did not present any cases of plagiarism, as it compares our work to a large database of existing academic papers.
 
 ## Programming
 The contributions made for this thesis were made in Python, and some of the analysis work was also done in Ruby.
